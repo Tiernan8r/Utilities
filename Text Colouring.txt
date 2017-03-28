@@ -21,16 +21,3 @@ Code 	Effect
 &N 	Underline
 &O 	Italic
 &R 	Reset 
-
-
-
-
-
-
-
-
-
-
-
-Player p = e.getNamedPlayer();
-                e.setTag(ChatColor.RED + p.getName());

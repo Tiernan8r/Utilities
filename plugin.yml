@@ -1,7 +1,7 @@
 main: me.Tiernanator.Utilities.Main
-version: 1.0
+version: 2.0
 name: Utilities
-description: Utitlity plugin of other plugins.
+description: Utility plugin of other plugins.
 load: STARTUP
 author: Tiernanator
 website: None
