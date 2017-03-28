@@ -1,0 +1,36 @@
+Code 	Effect
+&0 	Black
+&1 	Dark Blue
+&2 	Dark Green
+&3 	Dark Aqua
+&4 	Dark Red
+&5 	Dark Purple
+&6 	Gold
+&7 	Gray
+&8 	Dark Gray
+&9 	Blue
+&A 	Green
+&B 	Aqua
+&C 	Red
+&D 	Light Purple
+&E 	Yellow
+&F 	White
+&K 	Magic
+&L 	Bold
+&M 	Strike through
+&N 	Underline
+&O 	Italic
+&R 	Reset 
+
+
+
+
+
+
+
+
+
+
+
+Player p = e.getNamedPlayer();
+                e.setTag(ChatColor.RED + p.getName());

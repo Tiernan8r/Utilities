@@ -1,0 +1,12 @@
+main: me.Tiernanator.Utilities.Main
+version: 1.0
+name: Utilities
+description: Utitlity plugin of other plugins.
+load: STARTUP
+author: Tiernanator
+website: None
+database: false
+depend: []
+prefix: Util
+softdepend: []
+loadbefore: []
