@@ -1,6 +1,5 @@
 package me.Tiernanator.Menu.EventCallers;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,15 +8,14 @@ import org.bukkit.inventory.Inventory;
 
 import me.Tiernanator.Menu.Menu;
 import me.Tiernanator.Menu.MenuEvents.MenuCloseEvent;
-import me.Tiernanator.Utilities.Main;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import me.Tiernanator.Utilities.MetaData.MetaData;
-
 
 public class OnInventoryClose implements Listener {
 
-	private static Main plugin;
-	
-	public OnInventoryClose(Main main) {
+	private static UtilitiesMain plugin;
+
+	public OnInventoryClose(UtilitiesMain main) {
 		plugin = main;
 	}
 
@@ -26,19 +24,19 @@ public class OnInventoryClose implements Listener {
 
 		Player player = (Player) event.getPlayer();
 		Menu menu = (Menu) MetaData.getMetadata(player, "Menu", plugin);
-		if(menu == null) {
+		if (menu == null) {
 			return;
 		}
-		
+
 		Inventory menuInventory = menu.getCurrentMenu();
 		Inventory inventory = event.getInventory();
 
-		if(!menuInventory.equals(inventory)) {
+		if (!menuInventory.equals(inventory)) {
 			return;
 		}
-		
+
 		MenuCloseEvent menuCloseEvent = new MenuCloseEvent(menu, player);
-		Bukkit.getServer().getPluginManager().callEvent(menuCloseEvent);
+		plugin.getServer().getPluginManager().callEvent(menuCloseEvent);
 	}
 
 }

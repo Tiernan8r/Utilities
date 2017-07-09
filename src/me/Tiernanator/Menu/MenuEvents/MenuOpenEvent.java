@@ -10,39 +10,40 @@ import me.Tiernanator.Menu.Menu;
 //return all the values needed
 
 public final class MenuOpenEvent extends Event implements Cancellable {
-	
-	//handlers is a variable "handled"(...) by the server
-    private static final HandlerList handlers = new HandlerList();
-    //the Custom Menu object which contained the click action
-    private Menu menu;
-    //the player who clicked
-    private Player player;
-    //Whether the event can continue or not is handled by isCancelled
-    private boolean isCancelled;
 
-    //constructor for the event that sets the variables
-    public MenuOpenEvent(Menu menu, Player player) {
-        this.menu = menu;
-        this.player = player;
-        
-    }
+	// handlers is a variable "handled"(...) by the server
+	private static final HandlerList handlers = new HandlerList();
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+	// the Custom Menu object which contained the click action
+	private Menu menu;
+	// the player who clicked
+	private Player player;
 
-    //return the location clicked
-    public Menu getMenu() {
-        return this.menu;
-    }
-    //get the player who done it
-    public Player getPlayer() {
-        return player;
-    }
-    //the next two are necessary for the server to use the event
-    public HandlerList getHandlers() {
-        return handlers;
-    }
+	// Whether the event can continue or not is handled by isCancelled
+	private boolean isCancelled;
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+	// constructor for the event that sets the variables
+	public MenuOpenEvent(Menu menu, Player player) {
+		this.menu = menu;
+		this.player = player;
+
+	}
+	// the next two are necessary for the server to use the event
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+	// return the location clicked
+	public Menu getMenu() {
+		return this.menu;
+	}
+
+	// get the player who done it
+	public Player getPlayer() {
+		return player;
+	}
 
 	@Override
 	public boolean isCancelled() {
@@ -52,6 +53,6 @@ public final class MenuOpenEvent extends Event implements Cancellable {
 	@Override
 	public void setCancelled(boolean cancel) {
 		isCancelled = cancel;
-		
+
 	}
 }

@@ -5,14 +5,10 @@ import org.bukkit.entity.Player;
 
 public class RelativeLocation {
 
-	public static double roundToHalf(double d) {
-	    return Math.round(d * 2) / 2.0;
-	}
-
 	public static Location getRelativeLocationsFromString(Player player,
 			String stringX, String stringY, String stringZ) {
 
-		//check if the x, y & z coords given are numbers and not letters 
+		// check if the x, y & z coords given are numbers and not letters
 		String testX = "";
 		if (stringX.equalsIgnoreCase("~")) {
 			testX = "0";
@@ -24,7 +20,7 @@ public class RelativeLocation {
 		} catch (Exception e) {
 			return null;
 		}
-		//try for y 
+		// try for y
 		String testY = "";
 		if (stringY.equalsIgnoreCase("~")) {
 			testY = "0";
@@ -36,7 +32,7 @@ public class RelativeLocation {
 		} catch (Exception e) {
 			return null;
 		}
-		//try for z
+		// try for z
 		String testZ = "";
 		if (stringZ.equalsIgnoreCase("~")) {
 			testZ = "0";
@@ -48,12 +44,12 @@ public class RelativeLocation {
 		} catch (Exception e) {
 			return null;
 		}
-		//get the players exact location
+		// get the players exact location
 		Location playerLocation = player.getLocation();
 		int playerX = playerLocation.getBlockX();
 		int playerY = playerLocation.getBlockY();
 		int playerZ = playerLocation.getBlockZ();
-		
+
 		double x;
 		if (stringX.contains("~")) {
 			if (stringX.equals("~")) {
@@ -67,7 +63,7 @@ public class RelativeLocation {
 		} else {
 			x = Double.parseDouble(stringX);
 		}
-		
+
 		double y;
 		if (stringY.contains("~")) {
 			if (stringY.equals("~")) {
@@ -81,7 +77,7 @@ public class RelativeLocation {
 		} else {
 			y = Double.parseDouble(stringY);
 		}
-		
+
 		double z;
 		if (stringZ.contains("~")) {
 			if (stringZ.equals("~")) {
@@ -96,15 +92,19 @@ public class RelativeLocation {
 		} else {
 			z = Double.parseDouble(stringZ);
 		}
-		
+
 		x = Math.floor(x);
 		y = Math.floor(y);
 		z = Math.floor(z);
-		
+
 		Location relativeLocation = new Location(player.getWorld(), x, y, z);
-		
+
 		relativeLocation.add(0.5, 0, 0.5);
-		
+
 		return relativeLocation;
+	}
+
+	public static double roundToHalf(double d) {
+		return Math.round(d * 2) / 2.0;
 	}
 }

@@ -1,19 +1,18 @@
 package me.Tiernanator.Utilities.Players;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Tiernanator.Utilities.Main;
+import me.Tiernanator.SQL.SQLServer;
+import me.Tiernanator.Utilities.UtilitiesMain;
 
 public class PlayerTime {
 
-	private static Main plugin;
-	public static void setPlugin(Main main) {
+	private static UtilitiesMain plugin;
+	public static void setPlugin(UtilitiesMain main) {
 		plugin = main;
 	}
 
@@ -27,58 +26,7 @@ public class PlayerTime {
 		this.playerTime = System.currentTimeMillis();
 	}
 
-	public Player getPlayer() {
-		return this.player;
-	}
-
-	public long getPlayerTime() {
-		return this.playerTime;
-	}
-	
-	public long getPreviousPlayerTime() {
-		return this.previousTime;
-	}
-
-	public void setPlayerTime(long playerTime) {
-		addPlayerTime(getPlayerTime());
-		this.previousTime = getPlayerTime();
-		this.playerTime = playerTime;
-	}
-
-	private long previousPlayerTime() {
-
-		String playerUUID = getPlayer().getUniqueId().toString();
-
-		String query = "SELECT Time FROM PlayerTime WHERE UUID = ?;";
-
-		Connection connection = Main.getSQL().getConnection();
-		PreparedStatement preparedStatement = null;
-
-		long playerTime = 0;
-		try {
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, playerUUID);
-
-			ResultSet resultSet = null;
-			resultSet = preparedStatement.executeQuery();
-			if (!resultSet.isBeforeFirst()) {
-				playerTime = 0;
-				return playerTime;
-			}
-			resultSet.next();
-			playerTime = resultSet.getLong("Time");
-			preparedStatement.closeOnCompletion();
-			resultSet.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return playerTime;
-	}
-
 	public void addPlayerTime(long time) {
-
-//		setPlayerTime(time);
 
 		BukkitRunnable runnable = new BukkitRunnable() {
 
@@ -90,32 +38,14 @@ public class PlayerTime {
 				if (hasPlayerTime()) {
 
 					String query = "UPDATE PlayerTime SET Time = ? WHERE UUID = ?;";
-					Connection connection = Main.getSQL().getConnection();
-					PreparedStatement preparedStatement = null;
-					try {
-						preparedStatement = connection.prepareStatement(query);
-						preparedStatement.setLong(1, time);
-						preparedStatement.setString(2, playerUUID);
-						preparedStatement.executeUpdate();
-						preparedStatement.closeOnCompletion();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+					Object[] values = new Object[]{time, playerUUID};
+					SQLServer.executePreparedStatement(query, values);
 
 				} else {
 
-					Connection connection = Main.getSQL().getConnection();
-					PreparedStatement preparedStatement = null;
-					try {
-						preparedStatement = connection.prepareStatement(
-								"INSERT INTO PlayerTime (UUID, Time) VALUES (?, ?);");
-						preparedStatement.setString(1, playerUUID);
-						preparedStatement.setLong(2, time);
-						preparedStatement.executeUpdate();
-						preparedStatement.closeOnCompletion();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+					String statement = "INSERT INTO PlayerTime (UUID, Time) VALUES (?, ?);";
+					Object[] values = new Object[]{playerUUID, time};
+					SQLServer.executePreparedStatement(statement, values);
 
 				}
 			}
@@ -125,27 +55,50 @@ public class PlayerTime {
 
 	}
 
+	public Player getPlayer() {
+		return this.player;
+	}
+
+	public long getPlayerTime() {
+		return this.playerTime;
+	}
+
+	public long getPreviousPlayerTime() {
+		return this.previousTime;
+	}
+
 	public boolean hasPlayerTime() {
 
 		String playerUUID = getPlayer().getUniqueId().toString();
 		boolean hasValue = false;
-		String query = "SELECT Time FROM PlayerTime WHERE UUID = ?;";
+		String query = "SELECT Time FROM PlayerTime WHERE UUID = '" + playerUUID
+				+ "';";
 
-		Connection connection = Main.getSQL().getConnection();
-		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = SQLServer.getResultSet(query);
 		try {
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, playerUUID);
-			ResultSet resultSet = null;
-			resultSet = preparedStatement.executeQuery();
 			hasValue = resultSet.isBeforeFirst();
-			preparedStatement.closeOnCompletion();
-			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return hasValue;
 
+	}
+
+	private long previousPlayerTime() {
+
+		String playerUUID = getPlayer().getUniqueId().toString();
+
+		String query = "SELECT Time FROM PlayerTime WHERE UUID = '" + playerUUID
+				+ "';";
+		long playerTime = SQLServer.getLong(query, "Time");
+
+		return playerTime;
+	}
+
+	public void setPlayerTime(long playerTime) {
+		addPlayerTime(getPlayerTime());
+		this.previousTime = getPlayerTime();
+		this.playerTime = playerTime;
 	}
 
 }

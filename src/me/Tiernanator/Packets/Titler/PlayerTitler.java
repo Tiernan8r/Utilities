@@ -5,21 +5,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import me.Tiernanator.Packets.Packet;
-import me.Tiernanator.Utilities.Main;
-import net.minecraft.server.v1_11_R1.IChatBaseComponent;
-import net.minecraft.server.v1_11_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_11_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_11_R1.PacketPlayOutTitle.EnumTitleAction;
+import me.Tiernanator.Utilities.UtilitiesMain;
+import net.minecraft.server.v1_12_R1.IChatBaseComponent;
+import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;
 
 public class PlayerTitler implements Listener {
-
-	public PlayerTitler(Main main) {
-	}
 
 	public static void playerTitle(Player player, String phrase, boolean isBold,
 			boolean isItalic, boolean isUnderLine, ChatColor chatColour,
 			int fadeInTicks, int stayTicks, int fadeOutTicks,
-			EnumTitleAction title) {
+			TitleAction title) {
 
 		String bold = Boolean.toString(isBold);
 
@@ -37,11 +33,15 @@ public class PlayerTitler implements Listener {
 		IChatBaseComponent chatSerialized = ChatSerializer
 				.a(start + phrase + end);
 
-		PacketPlayOutTitle packetTitle = new PacketPlayOutTitle(title,
-				chatSerialized, fadeInTicks, stayTicks, fadeOutTicks);
+		PacketPlayOutTitle packetTitle = new PacketPlayOutTitle(
+				title.getAction(), chatSerialized, fadeInTicks, stayTicks,
+				fadeOutTicks);
 
 		Packet.sendPacket(player, packetTitle);
-		
+
+	}
+
+	public PlayerTitler(UtilitiesMain main) {
 	}
 
 }

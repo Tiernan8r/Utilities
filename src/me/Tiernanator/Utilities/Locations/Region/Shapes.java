@@ -7,137 +7,11 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Tiernanator.Utilities.Main;
+import me.Tiernanator.Utilities.UtilitiesMain;
 
 public class Shapes {
 
-	private static Main plugin;
-	public static void setPlugin(Main main) {
-		plugin = main;
-	}
-	
-	public static List<Block> generateSphere(Location centre, int radius,
-			boolean hollow) {
-
-		List<Block> allBlocks = new ArrayList<Block>();
-		int bX = centre.getBlockX();
-		int bY = centre.getBlockY();
-		int bZ = centre.getBlockZ();
-		
-		BukkitRunnable runnable = new BukkitRunnable() {
-			
-			@Override
-			public void run() {
-				
-				for (int x = bX - radius; x < bX + radius; x++) {
-					for (int y = bY - radius; y < bY + radius; y++) {
-						for (int z = bZ - radius; z < bZ + radius; z++) {
-							double diffX = bX - x;
-							double diffY = bY - y;
-							double diffZ = bZ - z;
-
-							double distance = (diffX * diffX) + (diffY * diffY)
-									+ (diffZ * diffZ);
-
-							if (distance < (radius * radius) && !(hollow
-									&& distance < ((radius - 1) * (radius - 1)))) {
-								Location loc = new Location(centre.getWorld(), x, y, z);
-								allBlocks.add(loc.getBlock());
-							}
-						}
-					}
-				}
-				
-			}
-		};
-		runnable.runTaskAsynchronously(plugin);
-
-//		for (int x = bX - radius; x < bX + radius; x++) {
-//			for (int y = bY - radius; y < bY + radius; y++) {
-//				for (int z = bZ - radius; z < bZ + radius; z++) {
-//					double diffX = bX - x;
-//					double diffY = bY - y;
-//					double diffZ = bZ - z;
-//
-//					double distance = (diffX * diffX) + (diffY * diffY)
-//							+ (diffZ * diffZ);
-//
-//					if (distance < (radius * radius) && !(hollow
-//							&& distance < ((radius - 1) * (radius - 1)))) {
-//						Location loc = new Location(centre.getWorld(), x, y, z);
-//						allBlocks.add(loc.getBlock());
-//					}
-//				}
-//			}
-//		}
-		return allBlocks;
-	}
-	
-	public static List<Block> generateDome(Location centre, int radius,
-			boolean hollow) {
-
-		List<Block> allBlocks = new ArrayList<Block>();
-		int bX = centre.getBlockX();
-		int bY = centre.getBlockY();
-		int bZ = centre.getBlockZ();
-		
-		int centreY = centre.getBlockY();
-		
-		BukkitRunnable runnable = new BukkitRunnable() {
-			
-			@Override
-			public void run() {
-				
-				for (int x = bX - radius; x < bX + radius; x++) {
-					for (int y = bY - radius; y < bY + radius; y++) {
-						for (int z = bZ - radius; z < bZ + radius; z++) {
-							double diffX = bX - x;
-							double diffY = bY - y;
-							double diffZ = bZ - z;
-
-							double distance = (diffX * diffX) + (diffY * diffY)
-									+ (diffZ * diffZ);
-
-							if (distance < (radius * radius) && !(hollow
-									&& distance < ((radius - 1) * (radius - 1)))) {
-								Location loc = new Location(centre.getWorld(), x, y, z);
-								
-								if(loc.getBlockY() >= centreY) {
-									allBlocks.add(loc.getBlock());
-								}
-							}
-						}
-					}
-				}
-				
-			}
-		};
-		runnable.runTaskAsynchronously(plugin);
-
-//		for (int x = bX - radius; x < bX + radius; x++) {
-//			for (int y = bY - radius; y < bY + radius; y++) {
-//				for (int z = bZ - radius; z < bZ + radius; z++) {
-//					double diffX = bX - x;
-//					double diffY = bY - y;
-//					double diffZ = bZ - z;
-//
-//					double distance = (diffX * diffX) + (diffY * diffY)
-//							+ (diffZ * diffZ);
-//
-//					if (distance < (radius * radius) && !(hollow
-//							&& distance < ((radius - 1) * (radius - 1)))) {
-//						Location loc = new Location(centre.getWorld(), x, y, z);
-//						
-//						if(loc.getBlockY() >= centreY) {
-//							allBlocks.add(loc.getBlock());
-//						}
-//					}
-//				}
-//			}
-//		}
-		return allBlocks;
-	}
-	
+	private static UtilitiesMain plugin;
 	public static List<Block> generateBowl(Location centre, int radius,
 			boolean hollow) {
 
@@ -145,11 +19,11 @@ public class Shapes {
 		int bX = centre.getBlockX();
 		int bY = centre.getBlockY();
 		int bZ = centre.getBlockZ();
-		
+
 		int centreY = centre.getBlockY();
 
 		BukkitRunnable runnable = new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				for (int x = bX - radius; x < bX + radius; x++) {
@@ -162,11 +36,13 @@ public class Shapes {
 							double distance = (diffX * diffX) + (diffY * diffY)
 									+ (diffZ * diffZ);
 
-							if (distance < (radius * radius) && !(hollow
-									&& distance < ((radius - 1) * (radius - 1)))) {
-								Location loc = new Location(centre.getWorld(), x, y, z);
-								
-								if(loc.getBlockY() <= centreY) {
+							if (distance < (radius * radius)
+									&& !(hollow && distance < ((radius - 1)
+											* (radius - 1)))) {
+								Location loc = new Location(centre.getWorld(),
+										x, y, z);
+
+								if (loc.getBlockY() <= centreY) {
 									allBlocks.add(loc.getBlock());
 								}
 							}
@@ -176,28 +52,76 @@ public class Shapes {
 			}
 		};
 		runnable.runTaskAsynchronously(plugin);
-		
-//		for (int x = bX - radius; x < bX + radius; x++) {
-//			for (int y = bY - radius; y < bY + radius; y++) {
-//				for (int z = bZ - radius; z < bZ + radius; z++) {
-//					double diffX = bX - x;
-//					double diffY = bY - y;
-//					double diffZ = bZ - z;
-//
-//					double distance = (diffX * diffX) + (diffY * diffY)
-//							+ (diffZ * diffZ);
-//
-//					if (distance < (radius * radius) && !(hollow
-//							&& distance < ((radius - 1) * (radius - 1)))) {
-//						Location loc = new Location(centre.getWorld(), x, y, z);
-//						
-//						if(loc.getBlockY() <= centreY) {
-//							allBlocks.add(loc.getBlock());
-//						}
-//					}
-//				}
-//			}
-//		}
+
+		// for (int x = bX - radius; x < bX + radius; x++) {
+		// for (int y = bY - radius; y < bY + radius; y++) {
+		// for (int z = bZ - radius; z < bZ + radius; z++) {
+		// double diffX = bX - x;
+		// double diffY = bY - y;
+		// double diffZ = bZ - z;
+		//
+		// double distance = (diffX * diffX) + (diffY * diffY)
+		// + (diffZ * diffZ);
+		//
+		// if (distance < (radius * radius) && !(hollow
+		// && distance < ((radius - 1) * (radius - 1)))) {
+		// Location loc = new Location(centre.getWorld(), x, y, z);
+		//
+		// if(loc.getBlockY() <= centreY) {
+		// allBlocks.add(loc.getBlock());
+		// }
+		// }
+		// }
+		// }
+		// }
+		return allBlocks;
+	}
+
+	public static List<Block> generateCircle(Location centre, int radius,
+			boolean hollow) {
+
+		List<Block> allBlocks = new ArrayList<Block>();
+		int bX = centre.getBlockX();
+		int bZ = centre.getBlockZ();
+
+		int y = centre.getBlockY();
+
+		BukkitRunnable runnable = new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				for (int x = bX - radius; x < bX + radius; x++) {
+					for (int z = bZ - radius; z < bZ + radius; z++) {
+						double diffX = bX - x;
+						double diffZ = bZ - z;
+
+						double distance = (diffX * diffX) + (diffZ * diffZ);
+
+						if (distance < (radius * radius) && !(hollow
+								&& distance < ((radius - 1) * (radius - 1)))) {
+							Location loc = new Location(centre.getWorld(), x, y,
+									z);
+							allBlocks.add(loc.getBlock());
+						}
+					}
+				}
+			}
+		};
+		runnable.runTaskAsynchronously(plugin);
+		// for (int x = bX - radius; x < bX + radius; x++) {
+		// for (int z = bZ - radius; z < bZ + radius; z++) {
+		// double diffX = bX - x;
+		// double diffZ = bZ - z;
+		//
+		// double distance = (diffX * diffX) + (diffZ * diffZ);
+		//
+		// if (distance < (radius * radius) && !(hollow
+		// && distance < ((radius - 1) * (radius - 1)))) {
+		// Location loc = new Location(centre.getWorld(), x, y, z);
+		// allBlocks.add(loc.getBlock());
+		// }
+		// }
+		// }
 		return allBlocks;
 	}
 
@@ -212,20 +136,23 @@ public class Shapes {
 		int radiusHeight = height / 2;
 
 		BukkitRunnable runnable = new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				for (int x = bX - radius; x < bX + radius; x++) {
-					for (int y = bY - radiusHeight; y < bY + radiusHeight; y++) {
+					for (int y = bY - radiusHeight; y < bY
+							+ radiusHeight; y++) {
 						for (int z = bZ - radius; z < bZ + radius; z++) {
 							double diffX = bX - x;
 							double diffZ = bZ - z;
 
 							double distance = (diffX * diffX) + (diffZ * diffZ);
 
-							if (distance < (radius * radius) && !(hollow
-									&& distance < ((radius - 1) * (radius - 1)))) {
-								Location loc = new Location(centre.getWorld(), x, y, z);
+							if (distance < (radius * radius)
+									&& !(hollow && distance < ((radius - 1)
+											* (radius - 1)))) {
+								Location loc = new Location(centre.getWorld(),
+										x, y, z);
 								allBlocks.add(loc.getBlock());
 							}
 						}
@@ -234,27 +161,94 @@ public class Shapes {
 			}
 		};
 		runnable.runTaskAsynchronously(plugin);
-//		for (int x = bX - radius; x < bX + radius; x++) {
-//			for (int y = bY - radiusHeight; y < bY + radiusHeight; y++) {
-//				for (int z = bZ - radius; z < bZ + radius; z++) {
-//					double diffX = bX - x;
-//					double diffZ = bZ - z;
-//
-//					double distance = (diffX * diffX) + (diffZ * diffZ);
-//
-//					if (distance < (radius * radius) && !(hollow
-//							&& distance < ((radius - 1) * (radius - 1)))) {
-//						Location loc = new Location(centre.getWorld(), x, y, z);
-//						allBlocks.add(loc.getBlock());
-//					}
-//				}
-//			}
-//		}
+		// for (int x = bX - radius; x < bX + radius; x++) {
+		// for (int y = bY - radiusHeight; y < bY + radiusHeight; y++) {
+		// for (int z = bZ - radius; z < bZ + radius; z++) {
+		// double diffX = bX - x;
+		// double diffZ = bZ - z;
+		//
+		// double distance = (diffX * diffX) + (diffZ * diffZ);
+		//
+		// if (distance < (radius * radius) && !(hollow
+		// && distance < ((radius - 1) * (radius - 1)))) {
+		// Location loc = new Location(centre.getWorld(), x, y, z);
+		// allBlocks.add(loc.getBlock());
+		// }
+		// }
+		// }
+		// }
 		return allBlocks;
 	}
-	
-	public static List<Block> generateHorizontalCylinder(Location centre, int radius,
-			int height, boolean hollow, boolean alongX) {
+
+	public static List<Block> generateDome(Location centre, int radius,
+			boolean hollow) {
+
+		List<Block> allBlocks = new ArrayList<Block>();
+		int bX = centre.getBlockX();
+		int bY = centre.getBlockY();
+		int bZ = centre.getBlockZ();
+
+		int centreY = centre.getBlockY();
+
+		BukkitRunnable runnable = new BukkitRunnable() {
+
+			@Override
+			public void run() {
+
+				for (int x = bX - radius; x < bX + radius; x++) {
+					for (int y = bY - radius; y < bY + radius; y++) {
+						for (int z = bZ - radius; z < bZ + radius; z++) {
+							double diffX = bX - x;
+							double diffY = bY - y;
+							double diffZ = bZ - z;
+
+							double distance = (diffX * diffX) + (diffY * diffY)
+									+ (diffZ * diffZ);
+
+							if (distance < (radius * radius)
+									&& !(hollow && distance < ((radius - 1)
+											* (radius - 1)))) {
+								Location loc = new Location(centre.getWorld(),
+										x, y, z);
+
+								if (loc.getBlockY() >= centreY) {
+									allBlocks.add(loc.getBlock());
+								}
+							}
+						}
+					}
+				}
+
+			}
+		};
+		runnable.runTaskAsynchronously(plugin);
+
+		// for (int x = bX - radius; x < bX + radius; x++) {
+		// for (int y = bY - radius; y < bY + radius; y++) {
+		// for (int z = bZ - radius; z < bZ + radius; z++) {
+		// double diffX = bX - x;
+		// double diffY = bY - y;
+		// double diffZ = bZ - z;
+		//
+		// double distance = (diffX * diffX) + (diffY * diffY)
+		// + (diffZ * diffZ);
+		//
+		// if (distance < (radius * radius) && !(hollow
+		// && distance < ((radius - 1) * (radius - 1)))) {
+		// Location loc = new Location(centre.getWorld(), x, y, z);
+		//
+		// if(loc.getBlockY() >= centreY) {
+		// allBlocks.add(loc.getBlock());
+		// }
+		// }
+		// }
+		// }
+		// }
+		return allBlocks;
+	}
+
+	public static List<Block> generateHorizontalCylinder(Location centre,
+			int radius, int height, boolean hollow, boolean alongX) {
 
 		List<Block> allBlocks = new ArrayList<Block>();
 		int bX = centre.getBlockX();
@@ -264,22 +258,26 @@ public class Shapes {
 		int radiusHeight = height / 2;
 
 		BukkitRunnable runnable = new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
-				
-				if(alongX) {
-					for (int x = bX - radiusHeight; x < bX + radiusHeight; x++) {
+
+				if (alongX) {
+					for (int x = bX - radiusHeight; x < bX
+							+ radiusHeight; x++) {
 						for (int y = bY - radius; y < bY + radius; y++) {
 							for (int z = bZ - radius; z < bZ + radius; z++) {
 								double diffX = bX - x;
 								double diffZ = bZ - z;
 
-								double distance = (diffX * diffX) + (diffZ * diffZ);
+								double distance = (diffX * diffX)
+										+ (diffZ * diffZ);
 
-								if (distance < (radius * radius) && !(hollow
-										&& distance < ((radius - 1) * (radius - 1)))) {
-									Location loc = new Location(centre.getWorld(), x, y, z);
+								if (distance < (radius * radius)
+										&& !(hollow && distance < ((radius - 1)
+												* (radius - 1)))) {
+									Location loc = new Location(
+											centre.getWorld(), x, y, z);
 									allBlocks.add(loc.getBlock());
 								}
 							}
@@ -288,108 +286,124 @@ public class Shapes {
 				} else {
 					for (int x = bX - radius; x < bX + radius; x++) {
 						for (int y = bY - radius; y < bY + radius; y++) {
-							for (int z = bZ - radiusHeight; z < bZ + radiusHeight; z++) {
+							for (int z = bZ - radiusHeight; z < bZ
+									+ radiusHeight; z++) {
 								double diffX = bX - x;
 								double diffZ = bZ - z;
 
-								double distance = (diffX * diffX) + (diffZ * diffZ);
+								double distance = (diffX * diffX)
+										+ (diffZ * diffZ);
 
-								if (distance < (radius * radius) && !(hollow
-										&& distance < ((radius - 1) * (radius - 1)))) {
-									Location loc = new Location(centre.getWorld(), x, y, z);
+								if (distance < (radius * radius)
+										&& !(hollow && distance < ((radius - 1)
+												* (radius - 1)))) {
+									Location loc = new Location(
+											centre.getWorld(), x, y, z);
 									allBlocks.add(loc.getBlock());
 								}
 							}
 						}
 					}
 				}
-				
+
 			}
 		};
 		runnable.runTaskAsynchronously(plugin);
-//		if(alongX) {
-//			for (int x = bX - radiusHeight; x < bX + radiusHeight; x++) {
-//				for (int y = bY - radius; y < bY + radius; y++) {
-//					for (int z = bZ - radius; z < bZ + radius; z++) {
-//						double diffX = bX - x;
-//						double diffZ = bZ - z;
-//
-//						double distance = (diffX * diffX) + (diffZ * diffZ);
-//
-//						if (distance < (radius * radius) && !(hollow
-//								&& distance < ((radius - 1) * (radius - 1)))) {
-//							Location loc = new Location(centre.getWorld(), x, y, z);
-//							allBlocks.add(loc.getBlock());
-//						}
-//					}
-//				}
-//			}
-//		} else {
-//			for (int x = bX - radius; x < bX + radius; x++) {
-//				for (int y = bY - radius; y < bY + radius; y++) {
-//					for (int z = bZ - radiusHeight; z < bZ + radiusHeight; z++) {
-//						double diffX = bX - x;
-//						double diffZ = bZ - z;
-//
-//						double distance = (diffX * diffX) + (diffZ * diffZ);
-//
-//						if (distance < (radius * radius) && !(hollow
-//								&& distance < ((radius - 1) * (radius - 1)))) {
-//							Location loc = new Location(centre.getWorld(), x, y, z);
-//							allBlocks.add(loc.getBlock());
-//						}
-//					}
-//				}
-//			}
-//		}
-		
+		// if(alongX) {
+		// for (int x = bX - radiusHeight; x < bX + radiusHeight; x++) {
+		// for (int y = bY - radius; y < bY + radius; y++) {
+		// for (int z = bZ - radius; z < bZ + radius; z++) {
+		// double diffX = bX - x;
+		// double diffZ = bZ - z;
+		//
+		// double distance = (diffX * diffX) + (diffZ * diffZ);
+		//
+		// if (distance < (radius * radius) && !(hollow
+		// && distance < ((radius - 1) * (radius - 1)))) {
+		// Location loc = new Location(centre.getWorld(), x, y, z);
+		// allBlocks.add(loc.getBlock());
+		// }
+		// }
+		// }
+		// }
+		// } else {
+		// for (int x = bX - radius; x < bX + radius; x++) {
+		// for (int y = bY - radius; y < bY + radius; y++) {
+		// for (int z = bZ - radiusHeight; z < bZ + radiusHeight; z++) {
+		// double diffX = bX - x;
+		// double diffZ = bZ - z;
+		//
+		// double distance = (diffX * diffX) + (diffZ * diffZ);
+		//
+		// if (distance < (radius * radius) && !(hollow
+		// && distance < ((radius - 1) * (radius - 1)))) {
+		// Location loc = new Location(centre.getWorld(), x, y, z);
+		// allBlocks.add(loc.getBlock());
+		// }
+		// }
+		// }
+		// }
+		// }
+
 		return allBlocks;
 	}
 
-	public static List<Block> generateCircle(Location centre, int radius,
+	public static List<Block> generateSphere(Location centre, int radius,
 			boolean hollow) {
 
 		List<Block> allBlocks = new ArrayList<Block>();
 		int bX = centre.getBlockX();
+		int bY = centre.getBlockY();
 		int bZ = centre.getBlockZ();
 
-		int y = centre.getBlockY();
-
 		BukkitRunnable runnable = new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
+
 				for (int x = bX - radius; x < bX + radius; x++) {
-					for (int z = bZ - radius; z < bZ + radius; z++) {
-						double diffX = bX - x;
-						double diffZ = bZ - z;
+					for (int y = bY - radius; y < bY + radius; y++) {
+						for (int z = bZ - radius; z < bZ + radius; z++) {
+							double diffX = bX - x;
+							double diffY = bY - y;
+							double diffZ = bZ - z;
 
-						double distance = (diffX * diffX) + (diffZ * diffZ);
+							double distance = (diffX * diffX) + (diffY * diffY)
+									+ (diffZ * diffZ);
 
-						if (distance < (radius * radius) && !(hollow
-								&& distance < ((radius - 1) * (radius - 1)))) {
-							Location loc = new Location(centre.getWorld(), x, y, z);
-							allBlocks.add(loc.getBlock());
+							if (distance < (radius * radius)
+									&& !(hollow && distance < ((radius - 1)
+											* (radius - 1)))) {
+								Location loc = new Location(centre.getWorld(),
+										x, y, z);
+								allBlocks.add(loc.getBlock());
+							}
 						}
 					}
 				}
+
 			}
 		};
 		runnable.runTaskAsynchronously(plugin);
-//		for (int x = bX - radius; x < bX + radius; x++) {
-//			for (int z = bZ - radius; z < bZ + radius; z++) {
-//				double diffX = bX - x;
-//				double diffZ = bZ - z;
-//
-//				double distance = (diffX * diffX) + (diffZ * diffZ);
-//
-//				if (distance < (radius * radius) && !(hollow
-//						&& distance < ((radius - 1) * (radius - 1)))) {
-//					Location loc = new Location(centre.getWorld(), x, y, z);
-//					allBlocks.add(loc.getBlock());
-//				}
-//			}
-//		}
+
+		// for (int x = bX - radius; x < bX + radius; x++) {
+		// for (int y = bY - radius; y < bY + radius; y++) {
+		// for (int z = bZ - radius; z < bZ + radius; z++) {
+		// double diffX = bX - x;
+		// double diffY = bY - y;
+		// double diffZ = bZ - z;
+		//
+		// double distance = (diffX * diffX) + (diffY * diffY)
+		// + (diffZ * diffZ);
+		//
+		// if (distance < (radius * radius) && !(hollow
+		// && distance < ((radius - 1) * (radius - 1)))) {
+		// Location loc = new Location(centre.getWorld(), x, y, z);
+		// allBlocks.add(loc.getBlock());
+		// }
+		// }
+		// }
+		// }
 		return allBlocks;
 	}
 
@@ -397,9 +411,9 @@ public class Shapes {
 			int radius, boolean hollow, boolean xAxis) {
 
 		List<Block> allBlocks = new ArrayList<Block>();
-		
+
 		BukkitRunnable runnable = new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				if (xAxis) {
@@ -417,9 +431,11 @@ public class Shapes {
 
 							double distance = (diffX * diffX) + (diffY * diffY);
 
-							if (distance < (radius * radius) && !(hollow
-									&& distance < ((radius - 1) * (radius - 1)))) {
-								Location loc = new Location(centre.getWorld(), x, y, z);
+							if (distance < (radius * radius)
+									&& !(hollow && distance < ((radius - 1)
+											* (radius - 1)))) {
+								Location loc = new Location(centre.getWorld(),
+										x, y, z);
 								allBlocks.add(loc.getBlock());
 							}
 						}
@@ -438,9 +454,11 @@ public class Shapes {
 
 							double distance = (diffZ * diffZ) + (diffY * diffY);
 
-							if (distance < (radius * radius) && !(hollow
-									&& distance < ((radius - 1) * (radius - 1)))) {
-								Location loc = new Location(centre.getWorld(), x, y, z);
+							if (distance < (radius * radius)
+									&& !(hollow && distance < ((radius - 1)
+											* (radius - 1)))) {
+								Location loc = new Location(centre.getWorld(),
+										x, y, z);
 								allBlocks.add(loc.getBlock());
 							}
 						}
@@ -449,7 +467,7 @@ public class Shapes {
 			}
 		};
 		runnable.runTaskAsynchronously(plugin);
-		
+
 		if (xAxis) {
 
 			// along x - axis
@@ -495,6 +513,10 @@ public class Shapes {
 			}
 		}
 		return allBlocks;
+	}
+
+	public static void setPlugin(UtilitiesMain main) {
+		plugin = main;
 	}
 
 }

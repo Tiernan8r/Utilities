@@ -25,18 +25,6 @@ public abstract class Database {
 	}
 
 	/**
-	 * Opens a connection with the database
-	 * 
-	 * @return Opened connection
-	 * @throws SQLException
-	 *             if the connection can not be opened
-	 * @throws ClassNotFoundException
-	 *             if the driver cannot be found
-	 */
-	public abstract Connection openConnection() throws SQLException,
-			ClassNotFoundException;
-
-	/**
 	 * Checks if a connection is open with the database
 	 * 
 	 * @return true if the connection is open
@@ -45,15 +33,6 @@ public abstract class Database {
 	 */
 	public boolean checkConnection() throws SQLException {
 		return connection != null && !connection.isClosed();
-	}
-
-	/**
-	 * Gets the connection with the database
-	 * 
-	 * @return Connection with the database, null if none
-	 */
-	public Connection getConnection() {
-		return connection;
 	}
 
 	/**
@@ -71,6 +50,26 @@ public abstract class Database {
 		return true;
 	}
 
+	/**
+	 * Gets the connection with the database
+	 * 
+	 * @return Connection with the database, null if none
+	 */
+	public Connection getConnection() {
+		return connection;
+	}
+
+	/**
+	 * Opens a connection with the database
+	 * 
+	 * @return Opened connection
+	 * @throws SQLException
+	 *             if the connection can not be opened
+	 * @throws ClassNotFoundException
+	 *             if the driver cannot be found
+	 */
+	public abstract Connection openConnection()
+			throws SQLException, ClassNotFoundException;
 
 	/**
 	 * Executes a SQL Query<br>
@@ -85,8 +84,8 @@ public abstract class Database {
 	 * @throws ClassNotFoundException
 	 *             If the driver cannot be found; see {@link #openConnection()}
 	 */
-	public ResultSet querySQL(String query) throws SQLException,
-			ClassNotFoundException {
+	public ResultSet querySQL(String query)
+			throws SQLException, ClassNotFoundException {
 		if (!checkConnection()) {
 			openConnection();
 		}
@@ -111,8 +110,8 @@ public abstract class Database {
 	 * @throws ClassNotFoundException
 	 *             If the driver cannot be found; see {@link #openConnection()}
 	 */
-	public int updateSQL(String query) throws SQLException,
-			ClassNotFoundException {
+	public int updateSQL(String query)
+			throws SQLException, ClassNotFoundException {
 		if (!checkConnection()) {
 			openConnection();
 		}

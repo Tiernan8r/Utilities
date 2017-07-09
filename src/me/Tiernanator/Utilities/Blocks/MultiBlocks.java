@@ -18,7 +18,7 @@ public class MultiBlocks {
 			if (inventoryHolder instanceof DoubleChest) {
 				DoubleChest doubleChest = (DoubleChest) inventoryHolder;
 				block = doubleChest.getLocation().getBlock();
-			} else if(inventoryHolder instanceof Chest) {
+			} else if (inventoryHolder instanceof Chest) {
 				block = ((Chest) inventoryHolder).getBlock();
 			}
 		}
@@ -40,5 +40,5 @@ public class MultiBlocks {
 
 		return block;
 	}
-	
+
 }

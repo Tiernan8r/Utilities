@@ -25,10 +25,9 @@ public class MessageColourer {
 	 * @return String containing relevant colouring from colour codes.
 	 * @see Colour
 	 */
-	public static String parseMessage(String message,
-			ChatColor defaultColour) {
+	public static String parseMessage(String message, ChatColor defaultColour) {
 
-		if(message == null) {
+		if (message == null) {
 			return null;
 		}
 		// Convert the input string to an array of characters
@@ -58,13 +57,13 @@ public class MessageColourer {
 				parsedMessage += currentCharacter;
 			}
 		}
-		
+
 		return parsedMessage;
 	}
-	
+
 	public static String removeColours(String message) {
 
-		if(message == null) {
+		if (message == null) {
 			return null;
 		}
 		// Convert the input string to an array of characters
@@ -79,8 +78,8 @@ public class MessageColourer {
 			if (currentCharacter.equals("§")) {
 				if (!(i + 1 > messageArray.length)) {
 
-					String code = "&" + Character
-							.toString(messageArray[i + 1]).toUpperCase();
+					String code = "&" + Character.toString(messageArray[i + 1])
+							.toUpperCase();
 
 					ChatColor colour = Colour.parseCodeToChatColour(code);
 
@@ -95,8 +94,8 @@ public class MessageColourer {
 				parsedMessage += currentCharacter;
 			}
 		}
-		
+
 		return parsedMessage;
 	}
-	
+
 }
