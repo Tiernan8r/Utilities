@@ -17,7 +17,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-import me.Tiernanator.Materials.BuildingMaterial;
+import me.Tiernanator.Utilities.Materials.BuildingMaterial;
 
 public class Cuboid
 		implements

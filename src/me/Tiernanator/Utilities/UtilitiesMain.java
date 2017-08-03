@@ -1,26 +1,29 @@
 package me.Tiernanator.Utilities;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
 
-import org.bukkit.WorldCreator;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.Tiernanator.Menu.Menu;
-import me.Tiernanator.Menu.MenuEntry;
-import me.Tiernanator.Menu.OnMenuEntryClick;
-import me.Tiernanator.Menu.EventCallers.OnInventoryClick;
-import me.Tiernanator.Menu.EventCallers.OnInventoryClose;
-import me.Tiernanator.Menu.EventCallers.OnInventoryOpen;
-import me.Tiernanator.SQL.SQLServer;
-import me.Tiernanator.SQL.SQLServerData;
-import me.Tiernanator.SQL.MySQL.MySQL;
+import me.Tiernanator.Utilities.Events.Handlers.AllCommandsEventHandler;
+import me.Tiernanator.Utilities.Events.Handlers.AllCustomPlayerEventsEventHandler;
+import me.Tiernanator.Utilities.Events.Handlers.AllEventsEventHandler;
 import me.Tiernanator.Utilities.Locations.Region.Region;
 import me.Tiernanator.Utilities.Locations.Region.Shapes;
+import me.Tiernanator.Utilities.Materials.BuildingMaterial;
+import me.Tiernanator.Utilities.Menu.Menu;
+import me.Tiernanator.Utilities.Menu.MenuEntry;
+import me.Tiernanator.Utilities.Menu.OnMenuEntryClick;
+import me.Tiernanator.Utilities.Menu.EventCallers.OnInventoryClick;
+import me.Tiernanator.Utilities.Menu.EventCallers.OnInventoryClose;
+import me.Tiernanator.Utilities.Menu.EventCallers.OnInventoryOpen;
 import me.Tiernanator.Utilities.Players.PlayerLogger;
 import me.Tiernanator.Utilities.Players.PlayerTime;
+import me.Tiernanator.Utilities.SQL.SQLServer;
+import me.Tiernanator.Utilities.SQL.SQLServerData;
+import me.Tiernanator.Utilities.SQL.MySQL.MySQL;
 
 public class UtilitiesMain extends JavaPlugin {
 
@@ -41,19 +44,12 @@ public class UtilitiesMain extends JavaPlugin {
 		setPlugin();
 		registerEvents();
 		initialiseSQL();
-
-		List<String> customWorldNames = getConfig()
-				.getStringList("CustomWorlds");
-		if (customWorldNames != null) {
-			for (String worldName : customWorldNames) {
-				try {
-				WorldCreator worldCreator = new WorldCreator(worldName);
-				worldCreator.createWorld();
-				} catch(Exception e) {
-					getLogger().log(Level.WARNING, "Could not load world: " + worldName);
-				}
-			}
+		
+		for(Player onlinePlayer : getServer().getOnlinePlayers()) {
+			PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(onlinePlayer, "");
+			getServer().getPluginManager().callEvent(playerJoinEvent);
 		}
+
 	}
 
 	private void registerEvents() {
@@ -64,6 +60,10 @@ public class UtilitiesMain extends JavaPlugin {
 		pm.registerEvents(new OnInventoryOpen(this), this);
 		pm.registerEvents(new OnInventoryClose(this), this);
 
+		pm.registerEvents(new AllEventsEventHandler(), this);
+		pm.registerEvents(new AllCommandsEventHandler(), this);
+		pm.registerEvents(new AllCustomPlayerEventsEventHandler(), this);
+		
 		// pm.registerEvents(new OnInventoryClickCancelled(this), this);
 		// pm.registerEvents(new OnInventoryOpenCancelled(this), this);
 
@@ -72,6 +72,7 @@ public class UtilitiesMain extends JavaPlugin {
 
 	private void setPlugin() {
 		SQLServer.setPlugin(this);
+		BuildingMaterial.setPlugin(this);
 		Region.setPlugin(this);
 		MenuEntry.setPlugin(this);
 		Menu.setPlugin(this);

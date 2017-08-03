@@ -21,3 +21,5 @@ Code 	Effect
 &N 	Underline
 &O 	Italic
 &R 	Reset 
+
+Where & = §;

@@ -14,17 +14,21 @@ import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Tiernanator.Materials.BuildingMaterial;
 import me.Tiernanator.Utilities.Locations.Region.Cuboids.Cuboid;
+import me.Tiernanator.Utilities.Materials.BuildingMaterial;
 
 public class Region {
 
 	private static JavaPlugin plugin;
 
+	protected int maxCycleSize = plugin.getConfig()
+			.getInt("Region.MaxCycleSize");
+	protected int delayBetweenCycles = plugin.getConfig()
+			.getInt("Region.DelayBetweenCycles");
+	
 	public static void setPlugin(JavaPlugin pl) {
 		plugin = pl;
 	}
-	protected int maxCycleSize = plugin.getConfig().getInt("Region.MaxCycleSize");
 
 	protected final List<Block> allBlocks;
 
@@ -102,9 +106,9 @@ public class Region {
 
 		List<Block> allBlocks = new ArrayList<Block>();
 
-		for (Block b : this.allBlocks) {
+		for (Block b : allBlocks()) {
 			if (b.getType().equals(material.getMaterial())
-					&& b.getData() == material.getDamage()) {
+					&& b.getData() == (byte) material.getDamage()) {
 				allBlocks.add(b);
 			}
 		}
@@ -123,7 +127,7 @@ public class Region {
 
 		List<Block> allBlocks = new ArrayList<Block>();
 
-		for (Block b : this.allBlocks) {
+		for (Block b : allBlocks()) {
 			if (b.getType().equals(material)) {
 				allBlocks.add(b);
 			}
@@ -163,56 +167,58 @@ public class Region {
 	 * @param damage
 	 *            The damage value of the block
 	 */
-	@SuppressWarnings("deprecation")
 	public void changeTo(BuildingMaterial material) {
 
-		Material type = material.getMaterial();
-		byte data = material.getDamage();
-
-		int amount = allBlocks().size();
-
-		BukkitRunnable runnable = new BukkitRunnable() {
-
-			int n = 0;
-			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
-
-			@Override
-			public void run() {
-
-				if (amount < maxCycleSize) {
-					blocksPerIteration = maxCycleSize;
-				}
-
-				for (int i = n; i < n + blocksPerIteration; i++) {
-
-					if (i >= amount) {
-						this.cancel();
-					}
-
-					Block block = null;
-					try {
-						block = allBlocks().get(i);
-					} catch (Exception e) {
-						continue;
-					}
-					if (block == null) {
-						continue;
-					}
-					if (block.getType() != Material.AIR) {
-						block.setType(type);
-						block.setData(data);
-					}
-				}
-				n += blocksPerIteration;
-
-				if (n > amount) {
-					this.cancel();
-				}
-
-			}
-		};
-		runnable.runTaskTimer(plugin, 0, 20);
-
+//		Material type = material.getMaterial();
+//		byte data = material.getDamage();
+//
+//		int amount = allBlocks().size();
+//
+//		BukkitRunnable runnable = new BukkitRunnable() {
+//
+//			int n = 0;
+//			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
+//
+//			@Override
+//			public void run() {
+//
+//				if (amount < maxCycleSize) {
+//					blocksPerIteration = maxCycleSize;
+//				}
+//
+//				for (int i = n; i < n + blocksPerIteration; i++) {
+//
+//					if (i >= amount) {
+//						this.cancel();
+//					}
+//
+//					Block block = null;
+//					try {
+//						block = allBlocks().get(i);
+//					} catch (Exception e) {
+//						continue;
+//					}
+//					if (block == null) {
+//						continue;
+//					}
+//					if (block.getType() != Material.AIR) {
+//						block.setType(type);
+//						block.setData(data);
+//					}
+//				}
+//				n += blocksPerIteration;
+//
+//				if (n > amount) {
+//					this.cancel();
+//				}
+//
+//			}
+//		};
+//		runnable.runTaskTimer(plugin, 0, 20);
+		List<Block> solidBlocks = allBlocks();
+		solidBlocks.removeAll(allBlocksByType(BuildingMaterial.getBuildingMaterial("AIR")));
+		set(solidBlocks, material);
+		
 	}
 
 	/**
@@ -439,12 +445,14 @@ public class Region {
 		allLiquidBlocks.addAll(allBlocksByType(Material.LAVA));
 		allLiquidBlocks.addAll(allBlocksByType(Material.STATIONARY_LAVA));
 
-		for (Block block : allLiquidBlocks) {
-			if (block.getType() == Material.AIR) {
-				continue;
-			}
-			block.setType(Material.AIR);
-		}
+//		for (Block block : allLiquidBlocks) {
+//			if (block.getType() == Material.AIR) {
+//				continue;
+//			}
+//			block.setType(Material.AIR);
+//		}
+		
+		set(allLiquidBlocks, BuildingMaterial.getBuildingMaterial("AIR"));
 
 	}
 
@@ -454,53 +462,53 @@ public class Region {
 	 * @param material
 	 *            the BuildingMaterial type
 	 */
-	@SuppressWarnings("deprecation")
 	public void fill(BuildingMaterial material) {
 
-		Material type = material.getMaterial();
-		byte data = material.getDamage();
-
-		int amount = allBlocks().size();
-
-		BukkitRunnable runnable = new BukkitRunnable() {
-
-			int n = 0;
-			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
-
-			@Override
-			public void run() {
-
-				if (amount < maxCycleSize) {
-					blocksPerIteration = maxCycleSize;
-				}
-
-				for (int i = n; i < n + blocksPerIteration; i++) {
-
-					if (i >= amount) {
-						this.cancel();
-					}
-
-					Block block = null;
-					try {
-						block = allBlocks().get(i);
-					} catch (Exception e) {
-						continue;
-					}
-					if (block == null) {
-						continue;
-					}
-					block.setType(type);
-					block.setData(data);
-				}
-				n += blocksPerIteration;
-
-				if (n > amount) {
-					this.cancel();
-				}
-
-			}
-		};
-		runnable.runTaskTimer(plugin, 0, 20);
+//		Material type = material.getMaterial();
+//		byte data = material.getDamage();
+//
+//		int amount = allBlocks().size();
+//
+//		BukkitRunnable runnable = new BukkitRunnable() {
+//
+//			int n = 0;
+//			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
+//
+//			@Override
+//			public void run() {
+//
+//				if (amount < maxCycleSize) {
+//					blocksPerIteration = maxCycleSize;
+//				}
+//
+//				for (int i = n; i < n + blocksPerIteration; i++) {
+//
+//					if (i >= amount) {
+//						this.cancel();
+//					}
+//
+//					Block block = null;
+//					try {
+//						block = allBlocks().get(i);
+//					} catch (Exception e) {
+//						continue;
+//					}
+//					if (block == null) {
+//						continue;
+//					}
+//					block.setType(type);
+//					block.setData(data);
+//				}
+//				n += blocksPerIteration;
+//
+//				if (n > amount) {
+//					this.cancel();
+//				}
+//
+//			}
+//		};
+//		runnable.runTaskTimer(plugin, 0, 20);
+		set(allBlocks(), material);
 
 	}
 
@@ -1028,19 +1036,21 @@ public class Region {
 	 * @param damage
 	 *            The damage value of the block
 	 */
-	@SuppressWarnings("deprecation")
 	public void instantChangeTo(BuildingMaterial material) {
 
-		Material type = material.getMaterial();
-
-		for (Block block : allBlocks()) {
-			if (block.getType() != Material.AIR) {
-				if (block.getType() != type) {
-					block.setType(type);
-					block.setData(material.getDamage());
-				}
-			}
-		}
+//		Material type = material.getMaterial();
+//
+//		for (Block block : allBlocks()) {
+//			if (block.getType() != Material.AIR) {
+//				if (block.getType() != type) {
+//					block.setType(type);
+//					block.setData(material.getDamage());
+//				}
+//			}
+//		}
+		List<Block> blocks = allBlocks();
+		blocks.removeAll(allBlocksByType(BuildingMaterial.getBuildingMaterial("AIR")));
+		set(blocks, material);
 
 	}
 
@@ -1051,17 +1061,17 @@ public class Region {
 	 * @param material
 	 *            the BuildingMaterial type
 	 */
-	@SuppressWarnings("deprecation")
 	public void instantFill(BuildingMaterial material) {
 
-		Material type = material.getMaterial();
-		byte data = material.getDamage();
-
-		for (Block block : allBlocks()) {
-			block.setType(type);
-			block.setData(data);
-		}
-
+//		Material type = material.getMaterial();
+//		byte data = material.getDamage();
+//
+//		for (Block block : allBlocks()) {
+//			block.setType(type);
+//			block.setData(data);
+//		}
+		set(allBlocks(), material);
+		
 	}
 
 	/**
@@ -1073,23 +1083,23 @@ public class Region {
 	 * @param replacement
 	 *            The replacement BuildingMaterial
 	 */
-	@SuppressWarnings("deprecation")
 	public void instantReplace(BuildingMaterial original,
 			BuildingMaterial replacement) {
 
-		for (Block block : this.allBlocks) {
-			if (block.getType() == original.getMaterial()) {
-
-				if (block.getData() == (byte) 99) {
-					block.setType(replacement.getMaterial());
-					block.setData(replacement.getDamage());
-				}
-				if (block.getData() == original.getDamage()) {
-					block.setType(replacement.getMaterial());
-					block.setData(replacement.getDamage());
-				}
-			}
-		}
+//		for (Block block : this.allBlocks) {
+//			if (block.getType() == original.getMaterial()) {
+//
+//				if (block.getData() == (byte) 99) {
+//					block.setType(replacement.getMaterial());
+//					block.setData(replacement.getDamage());
+//				}
+//				if (block.getData() == original.getDamage()) {
+//					block.setType(replacement.getMaterial());
+//					block.setData(replacement.getDamage());
+//				}
+//			}
+//		}
+		set(allBlocksByType(original), replacement);
 	}
 
 	/**
@@ -1111,15 +1121,22 @@ public class Region {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void remove(BuildingMaterial material) {
 
-		for (Block block : this.allBlocks) {
-			if (block.getType() == material.getMaterial()
-					&& block.getData() == material.getDamage()) {
-				block.setType(Material.AIR);
-			}
-		}
+		// for (Block block : this.allBlocks) {
+		// if (block.getType() == material.getMaterial()
+		// && block.getData() == material.getDamage()) {
+		// block.setType(Material.AIR);
+		// }
+		// }
+		
+//		if (this.allBlocks.size() < maxCycleSize) {
+//			instantReplace(material, BuildingMaterial.AIR);
+//		} else {
+//			replace(material, BuildingMaterial.AIR);
+//		}
+		set(allBlocksByType(material), BuildingMaterial.getBuildingMaterial("AIR"));
+		
 	}
 
 	/**
@@ -1132,11 +1149,17 @@ public class Region {
 	 */
 	public void remove(Material material) {
 
-		for (Block block : this.allBlocks) {
-			if (block.getType().equals(material)) {
-				block.setType(Material.AIR);
-			}
+		// for (Block block : this.allBlocks) {
+		// if (block.getType().equals(material)) {
+		// block.setType(Material.AIR);
+		// }
+		// }
+		if (this.allBlocks.size() < maxCycleSize) {
+			instantReplace(material, Material.AIR);
+		} else {
+			replace(material, Material.AIR);
 		}
+
 	}
 
 	/**
@@ -1147,15 +1170,75 @@ public class Region {
 	 * @param replacement
 	 *            The replacement BuildingMaterial
 	 */
-	@SuppressWarnings("deprecation")
 	public void replace(BuildingMaterial original,
 			BuildingMaterial replacement) {
 
-		Material originalType = original.getMaterial();
-		byte originalData = original.getDamage();
+//		Material originalType = original.getMaterial();
+//		byte originalData = original.getDamage();
+//
+//		Material replacementType = replacement.getMaterial();
+//		byte replacementData = replacement.getDamage();
+//
+//		int amount = allBlocks().size();
+//
+//		BukkitRunnable runnable = new BukkitRunnable() {
+//
+//			int n = 0;
+//			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
+//
+//			@Override
+//			public void run() {
+//
+//				if (amount < maxCycleSize) {
+//					blocksPerIteration = maxCycleSize;
+//				}
+//
+//				for (int i = n; i < n + blocksPerIteration; i++) {
+//
+//					if (i >= amount) {
+//						this.cancel();
+//					}
+//
+//					Block block = null;
+//					try {
+//						block = allBlocks().get(i);
+//					} catch (Exception e) {
+//						continue;
+//					}
+//					if (block == null) {
+//						continue;
+//					}
+//
+//					if (block.getType() == originalType) {
+//						if (block.getData() == originalData) {
+//
+//							block.setType(replacementType);
+//							block.setData(replacementData);
+//
+//						}
+//					}
+//				}
+//				n += blocksPerIteration;
+//
+//				if (n > amount) {
+//					this.cancel();
+//				}
+//
+//			}
+//		};
+//		runnable.runTaskTimer(plugin, 0, 20);
+		set(allBlocksByType(original), replacement);
+	}
 
-		Material replacementType = replacement.getMaterial();
-		byte replacementData = replacement.getDamage();
+	/**
+	 * Replace the blocks of a certain type within the Region with another type.
+	 *
+	 * @param original
+	 *            The BuildingMaterial to replace
+	 * @param replacement
+	 *            The replacement BuildingMaterial
+	 */
+	public void replace(Material original, Material replacement) {
 
 		int amount = allBlocks().size();
 
@@ -1187,13 +1270,10 @@ public class Region {
 						continue;
 					}
 
-					if (block.getType() == originalType) {
-						if (block.getData() == originalData) {
+					if (block.getType() == original) {
 
-							block.setType(replacementType);
-							block.setData(replacementData);
+						block.setType(replacement);
 
-						}
 					}
 				}
 				n += blocksPerIteration;
@@ -1205,6 +1285,7 @@ public class Region {
 			}
 		};
 		runnable.runTaskTimer(plugin, 0, 20);
+//		set(allBlocksByType(original), replacement);
 	}
 
 	@Deprecated
@@ -1224,6 +1305,66 @@ public class Region {
 	 */
 	public int volume() {
 		return getSizeX() * getSizeY() * getSizeZ();
+	}
+
+	@SuppressWarnings("deprecation")
+	private void set(List<Block> blocks, BuildingMaterial material) {
+
+		Material type = material.getMaterial();
+		byte data = material.getDamage();
+		int amountOfBlocks = blocks.size();
+
+		if (amountOfBlocks <= maxCycleSize) {
+
+			for (Block block : blocks) {
+				block.setType(type);
+				block.setData(data);
+			}
+
+		}
+		
+		BukkitRunnable runnable = new BukkitRunnable() {
+
+			int n = 0;
+//			int blocksPerIteration = (int) Math.ceil(amountOfBlocks / 20) + 1;
+
+			@Override
+			public void run() {
+
+//				if (amountOfBlocks < maxCycleSize) {
+//					blocksPerIteration = maxCycleSize;
+//				}
+
+//				for (int i = n; i < n + blocksPerIteration; i++) {
+				for (int i = n; i < n + maxCycleSize; i++) {
+
+					if (i >= amountOfBlocks) {
+						this.cancel();
+					}
+
+					Block block = null;
+					try {
+						block = blocks.get(i);
+					} catch (Exception e) {
+						continue;
+					}
+					if (block == null) {
+						continue;
+					}
+					block.setType(type);
+					block.setData(data);
+				}
+//				n += blocksPerIteration;
+				n += maxCycleSize;
+
+				if (n > amountOfBlocks + maxCycleSize) {
+					this.cancel();
+				}
+
+			}
+		};
+		runnable.runTaskTimer(plugin, 0, delayBetweenCycles);
+		
 	}
 
 }

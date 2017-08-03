@@ -5,8 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import me.Tiernanator.SQL.SQLServer;
 import me.Tiernanator.Utilities.UtilitiesMain;
+import me.Tiernanator.Utilities.SQL.SQLServer;
 
 public class PlayerLogger implements Listener {
 
@@ -16,14 +16,11 @@ public class PlayerLogger implements Listener {
 		return plugin;
 	}
 
-	public PlayerLogger() {
-	}
-
 	public PlayerLogger(UtilitiesMain main) {
 		plugin = main;
 	}
 
-	public String getPlayerNameByUUID(String uuid) {
+	public static String getPlayerNameByUUID(String uuid) {
 
 		String query = "SELECT Name FROM Players WHERE UUID = '" + uuid + "';";
 
@@ -33,7 +30,7 @@ public class PlayerLogger implements Listener {
 
 	}
 
-	public String getPlayerUUIDByName(String name) {
+	public static String getPlayerUUIDByName(String name) {
 
 		String query = "SELECT UUID FROM Players WHERE Name = '" + name + "';";
 
@@ -42,7 +39,7 @@ public class PlayerLogger implements Listener {
 		return playerUUID;
 	}
 
-	private boolean hasValue(Player player) {
+	private static boolean hasValue(Player player) {
 
 		String playerUUID = player.getUniqueId().toString();
 		String storedUUID = getPlayerUUIDByName(player.getName());

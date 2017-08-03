@@ -15,7 +15,7 @@ public class MetaData {
 		List<MetadataValue> values = object.getMetadata(key);
 
 		for (MetadataValue value : values) {
-
+			
 			if (value.getOwningPlugin() == plugin) {
 				return value.value();
 			}
@@ -27,8 +27,12 @@ public class MetaData {
 	public static void setMetadata(Metadatable object, String key, Object value,
 			Plugin plugin) {
 
+		if(getMetadata(object, key, plugin) != null) {
+			object.removeMetadata(key, plugin);
+		}
+		
 		object.setMetadata(key, new FixedMetadataValue(plugin, value));
 
 	}
-
+	
 }

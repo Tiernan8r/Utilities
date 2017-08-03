@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Tiernanator.SQL.SQLServer;
 import me.Tiernanator.Utilities.UtilitiesMain;
+import me.Tiernanator.Utilities.SQL.SQLServer;
 
 public class PlayerTime {
 

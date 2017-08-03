@@ -12,8 +12,7 @@ public class GetPlayer {
 
 	public static OfflinePlayer getOfflinePlayer(String name) {
 
-		PlayerLogger playerLogger = new PlayerLogger();
-		String playerUUID = playerLogger.getPlayerUUIDByName(name);
+		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
 
 		if (playerUUID == null) {
 			return null;
@@ -37,8 +36,7 @@ public class GetPlayer {
 	public static OfflinePlayer getOfflinePlayer(String name,
 			CommandSender sender, ChatColor warning, ChatColor highlight) {
 
-		PlayerLogger playerLogger = new PlayerLogger();
-		String playerUUID = playerLogger.getPlayerUUIDByName(name);
+		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
 
 		if (playerUUID == null) {
 			sender.sendMessage(highlight + name + warning
@@ -51,18 +49,22 @@ public class GetPlayer {
 					+ " has never played on the server before.");
 			return null;
 		}
+		
+//		UUID uuid = UUID.fromString(playerUUID);
+//		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+		
 		for (OfflinePlayer i : offlinePlayers) {
 			String iUUID = i.getUniqueId().toString();
 
 			if (playerUUID.equals(iUUID)) {
-				OfflinePlayer player = i.getPlayer();
-
-				if (player == null) {
-					sender.sendMessage(highlight + name + warning
-							+ " has never played on the server before.");
-				}
-
-				return player;
+//				OfflinePlayer player = i;
+//
+//				if (player == null) {
+//					sender.sendMessage(highlight + name + warning
+//							+ " has never played on the server before.");
+//				}
+				return i;
+//				return player;
 			}
 		}
 		return null;
@@ -91,8 +93,7 @@ public class GetPlayer {
 
 	public static Player getPlayer(String name) {
 
-		PlayerLogger playerLogger = new PlayerLogger();
-		String playerUUID = playerLogger.getPlayerUUIDByName(name);
+		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
 
 		if (playerUUID == null) {
 			return null;
@@ -115,8 +116,7 @@ public class GetPlayer {
 	public static Player getPlayer(String name, CommandSender sender,
 			ChatColor warning, ChatColor highlight) {
 
-		PlayerLogger playerLogger = new PlayerLogger();
-		String playerUUID = playerLogger.getPlayerUUIDByName(name);
+		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
 
 		if (playerUUID == null) {
 			sender.sendMessage(highlight + name + warning
