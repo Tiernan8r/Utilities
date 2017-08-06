@@ -1,5 +1,6 @@
 package me.Tiernanator.Utilities.Materials;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -11,8 +12,13 @@ import me.Tiernanator.Utilities.Colours.Colour;
 import me.Tiernanator.Utilities.File.ConfigAccessor;
 import me.Tiernanator.Utilities.Locations.Zones.ZoneName;
 
-public class BuildingMaterial {
+public class BuildingMaterial implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3723434881243663240L;
+	
 	private static UtilitiesMain plugin;
 	private static List<BuildingMaterial> allBuildingMaterials;
 
@@ -166,4 +172,14 @@ public class BuildingMaterial {
 		return true;
 	}
 
+	
+	@Override
+	public String toString() {
+		
+		String materialName = getMaterial().name();
+		materialName += ":" + getDamage();
+		return materialName;
+		
+	}
+	
 }

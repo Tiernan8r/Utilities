@@ -29,7 +29,7 @@ import java.util.logging.Level;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 /*
  * This class handles multiple configs by mimicking the in built methods for the 
  * generic config file, bt allowing it to work with any file name
@@ -39,7 +39,7 @@ public class ConfigAccessor {
 	// the name of the config file
 	private final String fileName;
 	// the plugin
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 
 	// the actual config file
 	private File configFile;
@@ -49,7 +49,7 @@ public class ConfigAccessor {
 
 	// constructor for the class, take the plugin & the file name of the file to
 	// get
-	public ConfigAccessor(JavaPlugin plugin, String fileName) {
+	public ConfigAccessor(Plugin plugin, String fileName) {
 		// if the plugin doesn't exist
 		if (plugin == null)
 			// can't work
@@ -76,14 +76,14 @@ public class ConfigAccessor {
 	/**
 	 * 
 	 * @param plugin
-	 *            The JavaPlugin instance whose folder will be used for the file
+	 *            The Plugin instance whose folder will be used for the file
 	 * @param fileName
 	 *            The name of the config file you want to access
 	 * @param folderName
-	 *            The name of the sub folder the fiile will be in, including the
+	 *            The name of the sub folder the file will be in, excluding the
 	 *            initial \
 	 */
-	public ConfigAccessor(JavaPlugin plugin, String fileName,
+	public ConfigAccessor(Plugin plugin, String fileName,
 			String folderName) {
 		// if the plugin doesn't exist
 		if (plugin == null)
@@ -106,6 +106,23 @@ public class ConfigAccessor {
 		// access
 		this.configFile = new File(dataFolder, fileName);
 	}
+	
+	public ConfigAccessor(Plugin parentPlugin, File textFile) {
+		// if the plugin doesn't exist
+		if (parentPlugin == null)
+			// can't work
+			throw new IllegalArgumentException("plugin cannot be null");
+
+		// otherwise the plugin contains a value, and set the internal variable
+		// to equal it
+		this.plugin = parentPlugin;
+		// the same for the file name
+		this.fileName = textFile.getName();
+
+		// the file by name from the folder & save it to the variable for later
+		// access
+		this.configFile = textFile;
+	}
 
 	// return the config file
 	public FileConfiguration getConfig() {
@@ -122,8 +139,6 @@ public class ConfigAccessor {
 		fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
 
 		// Look for defaults in the jar
-		// InputStream defConfigStream =
-		// plugin.getResource(plugin.getDataFolder() + fileName);
 		InputStream defConfigStream = plugin.getResource(fileName);
 
 		// if there are defaults

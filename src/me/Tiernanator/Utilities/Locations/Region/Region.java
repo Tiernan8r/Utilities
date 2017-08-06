@@ -1,5 +1,6 @@
 package me.Tiernanator.Utilities.Locations.Region;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +15,14 @@ import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.Tiernanator.Utilities.File.DataSaver;
 import me.Tiernanator.Utilities.Locations.Region.Cuboids.Cuboid;
 import me.Tiernanator.Utilities.Materials.BuildingMaterial;
+import me.Tiernanator.Utilities.Serialization.SerializableBlock;
 
-public class Region {
+public class Region implements Serializable {
+
+	private static final long serialVersionUID = -8823579760399021602L;
 
 	private static JavaPlugin plugin;
 
@@ -30,7 +35,7 @@ public class Region {
 		plugin = pl;
 	}
 
-	protected final List<Block> allBlocks;
+	protected List<SerializableBlock> allSerializableBlocks;
 
 	/**
 	 * Construct a Region from a Cuboid.
@@ -40,7 +45,7 @@ public class Region {
 	 */
 	public Region(Cuboid cuboid) {
 
-		this.allBlocks = cuboid.allBlocks();
+		this.allSerializableBlocks = SerializableBlock.convertToSerializablBlock(cuboid.allBlocks());
 
 	}
 
@@ -52,7 +57,7 @@ public class Region {
 	 */
 	public Region(List<Block> blocks) {
 
-		this.allBlocks = blocks;
+		this.allSerializableBlocks = SerializableBlock.convertToSerializablBlock(blocks);
 
 	}
 
@@ -74,8 +79,14 @@ public class Region {
 
 		Cuboid cuboid = new Cuboid(location1, location2);
 
-		this.allBlocks = cuboid.allBlocks();
+		this.allSerializableBlocks = SerializableBlock.convertToSerializablBlock(cuboid.allBlocks());
 
+	}
+	
+	public void reserializeBlocks() {
+		
+		this.allSerializableBlocks = SerializableBlock.convertToSerializablBlock(allBlocks());
+		
 	}
 
 	/**
@@ -83,15 +94,14 @@ public class Region {
 	 *
 	 * @return array of Block objects.
 	 */
+	public List<SerializableBlock> allSerializableBlocks() {
+
+		return this.allSerializableBlocks;
+
+	}
+	
 	public List<Block> allBlocks() {
-
-		// List<Block> allBlocks = new ArrayList<Block>();
-		//
-		// for (Block b : this.allBlocks) {
-		// allBlocks.add(b);
-		// }
-		return this.allBlocks;
-
+		return SerializableBlock.convertFromSerializableBlock(allSerializableBlocks());
 	}
 
 	/**
@@ -101,21 +111,23 @@ public class Region {
 	 *            the type of BuildingMaterial the blocks must have
 	 * @return array of Block objects.
 	 */
-	@SuppressWarnings("deprecation")
-	public List<Block> allBlocksByType(BuildingMaterial material) {
+	public List<SerializableBlock> allSerializableBlocksByType(BuildingMaterial material) {
 
-		List<Block> allBlocks = new ArrayList<Block>();
+		List<SerializableBlock> allSerializableBlocks = new ArrayList<SerializableBlock>();
 
-		for (Block b : allBlocks()) {
-			if (b.getType().equals(material.getMaterial())
-					&& b.getData() == (byte) material.getDamage()) {
-				allBlocks.add(b);
+		for (SerializableBlock b : allSerializableBlocks()) {
+			if(b.getBuildingMaterial().getMaterial().equals(material.getMaterial()) && b.getBuildingMaterial().getDamage() == material.getDamage()) {
+				allSerializableBlocks.add(b);
 			}
 		}
-		return allBlocks;
+		return allSerializableBlocks;
 
 	}
 
+	public List<Block> allBlocksByType(BuildingMaterial material) {
+		return SerializableBlock.convertFromSerializableBlock(allSerializableBlocksByType(material));
+	}
+	
 	/**
 	 * Get all the Blocks in the Region by material
 	 *
@@ -123,17 +135,21 @@ public class Region {
 	 *            the type of material the blocks must have
 	 * @return array of Block objects.
 	 */
-	public List<Block> allBlocksByType(Material material) {
+	public List<SerializableBlock> allSerializableBlocksByType(Material material) {
 
-		List<Block> allBlocks = new ArrayList<Block>();
+		List<SerializableBlock> allSerializableBlocks = new ArrayList<SerializableBlock>();
 
-		for (Block b : allBlocks()) {
-			if (b.getType().equals(material)) {
-				allBlocks.add(b);
+		for (SerializableBlock b : allSerializableBlocks()) {
+			if (b.getBuildingMaterial().getMaterial().equals(material)) {
+				allSerializableBlocks.add(b);
 			}
 		}
-		return allBlocks;
+		return allSerializableBlocks;
 
+	}
+	
+	public List<Block> allBlocksByType(Material material) {
+		return SerializableBlock.convertFromSerializableBlock(allSerializableBlocksByType(material));
 	}
 
 	/**
@@ -147,10 +163,10 @@ public class Region {
 		long total = 0;
 		int n = 0;
 
-		for (Block b : this.allBlocks) {
+		for (SerializableBlock b : this.allSerializableBlocks) {
 
-			if (b.isEmpty()) {
-				total += b.getLightLevel();
+			if (b.getBlock().isEmpty()) {
+				total += b.getBlock().getLightLevel();
 				++n;
 			}
 
@@ -169,54 +185,8 @@ public class Region {
 	 */
 	public void changeTo(BuildingMaterial material) {
 
-//		Material type = material.getMaterial();
-//		byte data = material.getDamage();
-//
-//		int amount = allBlocks().size();
-//
-//		BukkitRunnable runnable = new BukkitRunnable() {
-//
-//			int n = 0;
-//			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
-//
-//			@Override
-//			public void run() {
-//
-//				if (amount < maxCycleSize) {
-//					blocksPerIteration = maxCycleSize;
-//				}
-//
-//				for (int i = n; i < n + blocksPerIteration; i++) {
-//
-//					if (i >= amount) {
-//						this.cancel();
-//					}
-//
-//					Block block = null;
-//					try {
-//						block = allBlocks().get(i);
-//					} catch (Exception e) {
-//						continue;
-//					}
-//					if (block == null) {
-//						continue;
-//					}
-//					if (block.getType() != Material.AIR) {
-//						block.setType(type);
-//						block.setData(data);
-//					}
-//				}
-//				n += blocksPerIteration;
-//
-//				if (n > amount) {
-//					this.cancel();
-//				}
-//
-//			}
-//		};
-//		runnable.runTaskTimer(plugin, 0, 20);
-		List<Block> solidBlocks = allBlocks();
-		solidBlocks.removeAll(allBlocksByType(BuildingMaterial.getBuildingMaterial("AIR")));
+		List<SerializableBlock> solidBlocks = allSerializableBlocks();
+		solidBlocks.removeAll(allSerializableBlocksByType(BuildingMaterial.getBuildingMaterial("AIR")));
 		set(solidBlocks, material);
 		
 	}
@@ -232,7 +202,7 @@ public class Region {
 	@Deprecated
 	public void changeTo(Material material) {
 
-		int amount = allBlocks().size();
+		int amount = allSerializableBlocks().size();
 
 		BukkitRunnable runnable = new BukkitRunnable() {
 
@@ -252,17 +222,17 @@ public class Region {
 						this.cancel();
 					}
 
-					Block block = null;
+					SerializableBlock block = null;
 					try {
-						block = allBlocks().get(i);
+						block = allSerializableBlocks().get(i);
 					} catch (Exception e) {
 						continue;
 					}
 					if (block == null) {
 						continue;
 					}
-					if (block.getType() != Material.AIR) {
-						block.setType(material);
+					if (block.getBuildingMaterial().getMaterial() != Material.AIR) {
+						block.getBlock().setType(material);
 					}
 				}
 				n += blocksPerIteration;
@@ -287,16 +257,15 @@ public class Region {
 		return contains(b.getLocation());
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean contains(BuildingMaterial material) {
 
-		if (allBlocks().isEmpty()) {
+		if (allSerializableBlocks().isEmpty()) {
 			return false;
 		}
 
-		for (Block block : allBlocks()) {
-			if (block.getType().equals(material.getMaterial())) {
-				if (block.getData() == material.getDamage()) {
+		for (SerializableBlock block : allSerializableBlocks()) {
+			if (block.getBuildingMaterial().getMaterial().equals(material.getMaterial())) {
+				if (block.getBuildingMaterial().getDamage() == material.getDamage()) {
 					return true;
 				}
 			}
@@ -317,11 +286,11 @@ public class Region {
 	 */
 	public boolean contains(int x, int y, int z) {
 
-		if (allBlocks().isEmpty()) {
+		if (allSerializableBlocks().isEmpty()) {
 			return false;
 		}
 
-		for (Block b : this.allBlocks) {
+		for (SerializableBlock b : this.allSerializableBlocks) {
 			if (b.getX() == x && b.getY() == y && b.getZ() == z) {
 				return true;
 			}
@@ -337,7 +306,7 @@ public class Region {
 	 * @return true if the Location is within this Region, false otherwise
 	 */
 	public boolean contains(Location location) {
-		if (allBlocks().isEmpty()) {
+		if (allSerializableBlocks().isEmpty()) {
 			return false;
 		}
 
@@ -348,14 +317,14 @@ public class Region {
 
 	public boolean contains(Material material) {
 
-		if (allBlocks().isEmpty() || allBlocks() == null) {
+		if (allSerializableBlocks().isEmpty() || allSerializableBlocks() == null) {
 			return false;
 		}
-		for (Block block : allBlocks()) {
+		for (SerializableBlock block : allSerializableBlocks()) {
 			if (block == null) {
 				continue;
 			}
-			if (block.getType().equals(material)) {
+			if (block.getBuildingMaterial().getMaterial().equals(material)) {
 				return true;
 			}
 		}
@@ -369,13 +338,12 @@ public class Region {
 	 *            the material to check for
 	 * @return true if this Region contains only blocks of the given type
 	 */
-	@SuppressWarnings("deprecation")
 	public boolean containsOnly(BuildingMaterial material) {
-		for (Block b : this.allBlocks) {
-			if (b.getType() != material.getMaterial()) {
+		for (SerializableBlock b : this.allSerializableBlocks) {
+			if (b.getBuildingMaterial().getMaterial() != material.getMaterial()) {
 				return false;
 			} else {
-				if (b.getData() != material.getDamage()) {
+				if (b.getBuildingMaterial().getDamage() != material.getDamage()) {
 					return false;
 					// } else {
 					// return true;
@@ -393,8 +361,8 @@ public class Region {
 	 * @return true if this Region contains only blocks of the given type
 	 */
 	public boolean containsOnly(Material material) {
-		for (Block b : this.allBlocks) {
-			if (b.getType() != material) {
+		for (SerializableBlock b : this.allSerializableBlocks) {
+			if (b.getBuildingMaterial().getMaterial() != material) {
 				return false;
 			}
 		}
@@ -438,15 +406,15 @@ public class Region {
 	 */
 	public void drain() {
 
-		List<Block> allLiquidBlocks = new ArrayList<Block>();
+		List<SerializableBlock> allLiquidBlocks = new ArrayList<SerializableBlock>();
 
-		allLiquidBlocks.addAll(allBlocksByType(Material.WATER));
-		allLiquidBlocks.addAll(allBlocksByType(Material.STATIONARY_WATER));
-		allLiquidBlocks.addAll(allBlocksByType(Material.LAVA));
-		allLiquidBlocks.addAll(allBlocksByType(Material.STATIONARY_LAVA));
+		allLiquidBlocks.addAll(allSerializableBlocksByType(Material.WATER));
+		allLiquidBlocks.addAll(allSerializableBlocksByType(Material.STATIONARY_WATER));
+		allLiquidBlocks.addAll(allSerializableBlocksByType(Material.LAVA));
+		allLiquidBlocks.addAll(allSerializableBlocksByType(Material.STATIONARY_LAVA));
 
 //		for (Block block : allLiquidBlocks) {
-//			if (block.getType() == Material.AIR) {
+//			if (block.getBuildingMaterial().getMaterial() == Material.AIR) {
 //				continue;
 //			}
 //			block.setType(Material.AIR);
@@ -464,51 +432,7 @@ public class Region {
 	 */
 	public void fill(BuildingMaterial material) {
 
-//		Material type = material.getMaterial();
-//		byte data = material.getDamage();
-//
-//		int amount = allBlocks().size();
-//
-//		BukkitRunnable runnable = new BukkitRunnable() {
-//
-//			int n = 0;
-//			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
-//
-//			@Override
-//			public void run() {
-//
-//				if (amount < maxCycleSize) {
-//					blocksPerIteration = maxCycleSize;
-//				}
-//
-//				for (int i = n; i < n + blocksPerIteration; i++) {
-//
-//					if (i >= amount) {
-//						this.cancel();
-//					}
-//
-//					Block block = null;
-//					try {
-//						block = allBlocks().get(i);
-//					} catch (Exception e) {
-//						continue;
-//					}
-//					if (block == null) {
-//						continue;
-//					}
-//					block.setType(type);
-//					block.setData(data);
-//				}
-//				n += blocksPerIteration;
-//
-//				if (n > amount) {
-//					this.cancel();
-//				}
-//
-//			}
-//		};
-//		runnable.runTaskTimer(plugin, 0, 20);
-		set(allBlocks(), material);
+		set(allSerializableBlocks(), material);
 
 	}
 
@@ -521,7 +445,7 @@ public class Region {
 	@Deprecated
 	public void fill(Material material) {
 
-		int amount = allBlocks().size();
+		int amount = allSerializableBlocks().size();
 
 		BukkitRunnable runnable = new BukkitRunnable() {
 
@@ -541,16 +465,16 @@ public class Region {
 						this.cancel();
 					}
 
-					Block block = null;
+					SerializableBlock block = null;
 					try {
-						block = allBlocks().get(i);
+						block = allSerializableBlocks().get(i);
 					} catch (Exception e) {
 						continue;
 					}
 					if (block == null) {
 						continue;
 					}
-					block.setType(material);
+					block.getBlock().setType(material);
 				}
 				n += blocksPerIteration;
 
@@ -564,21 +488,17 @@ public class Region {
 
 	}
 
-	// /**
-	// * Get all the Blocks in the Region.
-	// *
-	// * @return array of Block objects.
 	// */
-	// public List<Block> allBlocksByMaterial(Material material) {
+	// public List<Block> allSerializableBlocksByMaterial(Material material) {
 	//
-	// List<Block> allBlocks = new ArrayList<Block>();
+	// List<Block> allSerializableBlocks = new ArrayList<Block>();
 	//
-	// for (Block b : this.allBlocks) {
-	// if(b.getType() == material) {
-	// allBlocks.add(b);
+	// for (Block b : this.allSerializableBlocks) {
+	// if(b.getBuildingMaterial().getMaterial() == material) {
+	// allSerializableBlocks.add(b);
 	// }
 	// }
-	// return allBlocks;
+	// return allSerializableBlocks;
 	//
 	// }
 	//
@@ -588,18 +508,18 @@ public class Region {
 	// * @return array of Block objects.
 	// */
 	// @SuppressWarnings("deprecation")
-	// public List<Block> allBlocksByMaterial(BuildingMaterial material) {
+	// public List<Block> allSerializableBlocksByMaterial(BuildingMaterial material) {
 	//
-	// List<Block> allBlocks = new ArrayList<Block>();
+	// List<Block> allSerializableBlocks = new ArrayList<Block>();
 	//
-	// for (Block b : this.allBlocks) {
-	// if(b.getType() == material.getMaterial()) {
-	// if(b.getData() == (byte) material.getDamage()) {
-	// allBlocks.add(b);
+	// for (Block b : this.allSerializableBlocks) {
+	// if(b.getBuildingMaterial().getMaterial() == material.getMaterial()) {
+	// if(b.getBuildingMaterial().getDamage() == (byte) material.getDamage()) {
+	// allSerializableBlocks.add(b);
 	// }
 	// }
 	// }
-	// return allBlocks;
+	// return allSerializableBlocks;
 	//
 	//
 	// }
@@ -607,11 +527,11 @@ public class Region {
 	@SuppressWarnings("deprecation")
 	public void flip() {
 
-		List<Block> allBlocks = this.allBlocks();
+		List<SerializableBlock> allSerializableBlocks = this.allSerializableBlocks();
 
-		Block highest = null;
-		Block lowest = null;
-		for (Block block : allBlocks) {
+		SerializableBlock highest = null;
+		SerializableBlock lowest = null;
+		for (SerializableBlock block : allSerializableBlocks) {
 			// Find Highest Block
 			// Find Lowest block
 			if (highest == null || lowest == null) {
@@ -619,11 +539,11 @@ public class Region {
 				lowest = block;
 				continue;
 			}
-			if (highest.getLocation().getBlockY() < block.getLocation()
+			if (highest.asLocation().getBlockY() < block.asLocation()
 					.getBlockY()) {
 				highest = block;
 			}
-			if (lowest.getLocation().getBlockY() > block.getLocation()
+			if (lowest.asLocation().getBlockY() > block.asLocation()
 					.getBlockY()) {
 				lowest = block;
 			}
@@ -632,22 +552,22 @@ public class Region {
 
 		HashMap<Location, Material> materialHashmap = new HashMap<Location, Material>();
 		HashMap<Location, Byte> dataHashmap = new HashMap<Location, Byte>();
-		for (int i = 0; i <= highest.getLocation().getBlockY()
-				- lowest.getLocation().getBlockY(); i++) {
+		for (int i = 0; i <= highest.asLocation().getBlockY()
+				- lowest.asLocation().getBlockY(); i++) {
 
-			for (Block block : allBlocks) {
+			for (SerializableBlock block : allSerializableBlocks) {
 
-				if (block.getLocation()
-						.getBlockY() == lowest.getLocation().getBlockY() + i) {
+				if (block.asLocation()
+						.getBlockY() == lowest.asLocation().getBlockY() + i) {
 
-					Block target = null;
-					for (Block b : allBlocks) {
-						if (b.getLocation().getBlockY() == highest.getLocation()
+					SerializableBlock target = null;
+					for (SerializableBlock b : allSerializableBlocks) {
+						if (b.asLocation().getBlockY() == highest.asLocation()
 								.getBlockY() - i) {
-							if (b.getLocation().getBlockX() == block
-									.getLocation().getBlockX()) {
-								if (b.getLocation().getBlockZ() == block
-										.getLocation().getBlockZ()) {
+							if (b.asLocation().getBlockX() == block
+									.asLocation().getBlockX()) {
+								if (b.asLocation().getBlockZ() == block
+										.asLocation().getBlockZ()) {
 									target = b;
 								}
 							}
@@ -655,23 +575,23 @@ public class Region {
 					}
 					if (target == null) {
 
-						materialHashmap.put(block.getLocation(), Material.AIR);
-						dataHashmap.put(block.getLocation(), (byte) 0);
-						Location location = highest.getLocation().subtract(0, i,
+						materialHashmap.put(block.asLocation(), Material.AIR);
+						dataHashmap.put(block.asLocation(), (byte) 0);
+						Location location = highest.asLocation().subtract(0, i,
 								0);
-						location.setX(block.getLocation().getBlockX());
-						location.setZ(block.getLocation().getBlockZ());
+						location.setX(block.asLocation().getBlockX());
+						location.setZ(block.asLocation().getBlockZ());
 
-						materialHashmap.put(location, block.getType());
-						dataHashmap.put(location, block.getData());
+						materialHashmap.put(location, block.getBuildingMaterial().getMaterial());
+						dataHashmap.put(location, block.getBuildingMaterial().getDamage());
 
-						materialHashmap.put(block.getLocation(), Material.AIR);
-						dataHashmap.put(block.getLocation(), (byte) 0);
+						materialHashmap.put(block.asLocation(), Material.AIR);
+						dataHashmap.put(block.asLocation(), (byte) 0);
 
 					} else {
-						materialHashmap.put(block.getLocation(),
-								target.getType());
-						dataHashmap.put(block.getLocation(), target.getData());
+						materialHashmap.put(block.asLocation(),
+								target.getBuildingMaterial().getMaterial());
+						dataHashmap.put(block.asLocation(), target.getBuildingMaterial().getDamage());
 					}
 				}
 			}
@@ -830,7 +750,7 @@ public class Region {
 		int y = 256;
 		int z = 999999999;
 
-		for (Block b : this.allBlocks) {
+		for (SerializableBlock b : this.allSerializableBlocks) {
 
 			if (b.getX() < x && b.getY() < y && b.getZ() < z) {
 				x = b.getX();
@@ -976,7 +896,7 @@ public class Region {
 		int y = 0;
 		int z = -999999999;
 
-		for (Block b : this.allBlocks) {
+		for (SerializableBlock b : this.allSerializableBlocks) {
 
 			if (b.getX() > x && b.getY() > y && b.getZ() > z) {
 				x = b.getX();
@@ -1022,7 +942,7 @@ public class Region {
 	 */
 	public World getWorld() {
 
-		World world = this.allBlocks.get(0).getWorld();
+		World world = this.allSerializableBlocks.get(0).getWorld();
 		return world;
 
 	}
@@ -1038,18 +958,8 @@ public class Region {
 	 */
 	public void instantChangeTo(BuildingMaterial material) {
 
-//		Material type = material.getMaterial();
-//
-//		for (Block block : allBlocks()) {
-//			if (block.getType() != Material.AIR) {
-//				if (block.getType() != type) {
-//					block.setType(type);
-//					block.setData(material.getDamage());
-//				}
-//			}
-//		}
-		List<Block> blocks = allBlocks();
-		blocks.removeAll(allBlocksByType(BuildingMaterial.getBuildingMaterial("AIR")));
+		List<SerializableBlock> blocks = allSerializableBlocks();
+		blocks.removeAll(allSerializableBlocksByType(BuildingMaterial.getBuildingMaterial("AIR")));
 		set(blocks, material);
 
 	}
@@ -1063,14 +973,7 @@ public class Region {
 	 */
 	public void instantFill(BuildingMaterial material) {
 
-//		Material type = material.getMaterial();
-//		byte data = material.getDamage();
-//
-//		for (Block block : allBlocks()) {
-//			block.setType(type);
-//			block.setData(data);
-//		}
-		set(allBlocks(), material);
+		set(allSerializableBlocks(), material);
 		
 	}
 
@@ -1086,20 +989,8 @@ public class Region {
 	public void instantReplace(BuildingMaterial original,
 			BuildingMaterial replacement) {
 
-//		for (Block block : this.allBlocks) {
-//			if (block.getType() == original.getMaterial()) {
-//
-//				if (block.getData() == (byte) 99) {
-//					block.setType(replacement.getMaterial());
-//					block.setData(replacement.getDamage());
-//				}
-//				if (block.getData() == original.getDamage()) {
-//					block.setType(replacement.getMaterial());
-//					block.setData(replacement.getDamage());
-//				}
-//			}
-//		}
-		set(allBlocksByType(original), replacement);
+		set(allSerializableBlocksByType(original), replacement);
+
 	}
 
 	/**
@@ -1114,28 +1005,16 @@ public class Region {
 	@Deprecated
 	public void instantReplace(Material original, Material replacement) {
 
-		for (Block block : this.allBlocks) {
-			if (block.getType().equals(original)) {
-				block.setType(replacement);
+		for (SerializableBlock block : this.allSerializableBlocks) {
+			if (block.getBuildingMaterial().getMaterial().equals(original)) {
+				block.getBlock().setType(replacement);
 			}
 		}
 	}
 
 	public void remove(BuildingMaterial material) {
 
-		// for (Block block : this.allBlocks) {
-		// if (block.getType() == material.getMaterial()
-		// && block.getData() == material.getDamage()) {
-		// block.setType(Material.AIR);
-		// }
-		// }
-		
-//		if (this.allBlocks.size() < maxCycleSize) {
-//			instantReplace(material, BuildingMaterial.AIR);
-//		} else {
-//			replace(material, BuildingMaterial.AIR);
-//		}
-		set(allBlocksByType(material), BuildingMaterial.getBuildingMaterial("AIR"));
+		set(allSerializableBlocksByType(material), BuildingMaterial.getBuildingMaterial("AIR"));
 		
 	}
 
@@ -1149,12 +1028,7 @@ public class Region {
 	 */
 	public void remove(Material material) {
 
-		// for (Block block : this.allBlocks) {
-		// if (block.getType().equals(material)) {
-		// block.setType(Material.AIR);
-		// }
-		// }
-		if (this.allBlocks.size() < maxCycleSize) {
+		if (this.allSerializableBlocks.size() < maxCycleSize) {
 			instantReplace(material, Material.AIR);
 		} else {
 			replace(material, Material.AIR);
@@ -1173,61 +1047,8 @@ public class Region {
 	public void replace(BuildingMaterial original,
 			BuildingMaterial replacement) {
 
-//		Material originalType = original.getMaterial();
-//		byte originalData = original.getDamage();
-//
-//		Material replacementType = replacement.getMaterial();
-//		byte replacementData = replacement.getDamage();
-//
-//		int amount = allBlocks().size();
-//
-//		BukkitRunnable runnable = new BukkitRunnable() {
-//
-//			int n = 0;
-//			int blocksPerIteration = (int) Math.ceil(amount / 20) + 1;
-//
-//			@Override
-//			public void run() {
-//
-//				if (amount < maxCycleSize) {
-//					blocksPerIteration = maxCycleSize;
-//				}
-//
-//				for (int i = n; i < n + blocksPerIteration; i++) {
-//
-//					if (i >= amount) {
-//						this.cancel();
-//					}
-//
-//					Block block = null;
-//					try {
-//						block = allBlocks().get(i);
-//					} catch (Exception e) {
-//						continue;
-//					}
-//					if (block == null) {
-//						continue;
-//					}
-//
-//					if (block.getType() == originalType) {
-//						if (block.getData() == originalData) {
-//
-//							block.setType(replacementType);
-//							block.setData(replacementData);
-//
-//						}
-//					}
-//				}
-//				n += blocksPerIteration;
-//
-//				if (n > amount) {
-//					this.cancel();
-//				}
-//
-//			}
-//		};
-//		runnable.runTaskTimer(plugin, 0, 20);
-		set(allBlocksByType(original), replacement);
+		set(allSerializableBlocksByType(original), replacement);
+	
 	}
 
 	/**
@@ -1240,7 +1061,7 @@ public class Region {
 	 */
 	public void replace(Material original, Material replacement) {
 
-		int amount = allBlocks().size();
+		int amount = allSerializableBlocks().size();
 
 		BukkitRunnable runnable = new BukkitRunnable() {
 
@@ -1260,9 +1081,9 @@ public class Region {
 						this.cancel();
 					}
 
-					Block block = null;
+					SerializableBlock block = null;
 					try {
-						block = allBlocks().get(i);
+						block = allSerializableBlocks().get(i);
 					} catch (Exception e) {
 						continue;
 					}
@@ -1270,9 +1091,9 @@ public class Region {
 						continue;
 					}
 
-					if (block.getType() == original) {
+					if (block.getBuildingMaterial().getMaterial() == original) {
 
-						block.setType(replacement);
+						block.getBlock().setType(replacement);
 
 					}
 				}
@@ -1285,7 +1106,7 @@ public class Region {
 			}
 		};
 		runnable.runTaskTimer(plugin, 0, 20);
-//		set(allBlocksByType(original), replacement);
+//		set(allSerializableBlocksByType(original), replacement);
 	}
 
 	@Deprecated
@@ -1308,7 +1129,7 @@ public class Region {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void set(List<Block> blocks, BuildingMaterial material) {
+	private void set(List<SerializableBlock> blocks, BuildingMaterial material) {
 
 		Material type = material.getMaterial();
 		byte data = material.getDamage();
@@ -1316,9 +1137,9 @@ public class Region {
 
 		if (amountOfBlocks <= maxCycleSize) {
 
-			for (Block block : blocks) {
-				block.setType(type);
-				block.setData(data);
+			for (SerializableBlock block : blocks) {
+				block.getBlock().setType(type);
+				block.getBlock().setData(data);
 			}
 
 		}
@@ -1326,23 +1147,17 @@ public class Region {
 		BukkitRunnable runnable = new BukkitRunnable() {
 
 			int n = 0;
-//			int blocksPerIteration = (int) Math.ceil(amountOfBlocks / 20) + 1;
 
 			@Override
 			public void run() {
 
-//				if (amountOfBlocks < maxCycleSize) {
-//					blocksPerIteration = maxCycleSize;
-//				}
-
-//				for (int i = n; i < n + blocksPerIteration; i++) {
 				for (int i = n; i < n + maxCycleSize; i++) {
 
 					if (i >= amountOfBlocks) {
 						this.cancel();
 					}
 
-					Block block = null;
+					SerializableBlock block = null;
 					try {
 						block = blocks.get(i);
 					} catch (Exception e) {
@@ -1351,10 +1166,10 @@ public class Region {
 					if (block == null) {
 						continue;
 					}
-					block.setType(type);
-					block.setData(data);
+					block.getBlock().setType(type);
+					block.getBlock().setData(data);
 				}
-//				n += blocksPerIteration;
+
 				n += maxCycleSize;
 
 				if (n > amountOfBlocks + maxCycleSize) {
@@ -1367,4 +1182,11 @@ public class Region {
 		
 	}
 
+	public void save(JavaPlugin plugin, String folderName, String fileName) {
+		
+		DataSaver dataSaver = new DataSaver(plugin, folderName);
+		dataSaver.write(this, fileName);
+		
+	}
+	
 }

@@ -11,7 +11,6 @@ import me.Tiernanator.Utilities.Events.Handlers.AllCommandsEventHandler;
 import me.Tiernanator.Utilities.Events.Handlers.AllCustomPlayerEventsEventHandler;
 import me.Tiernanator.Utilities.Events.Handlers.AllEventsEventHandler;
 import me.Tiernanator.Utilities.Locations.Region.Region;
-import me.Tiernanator.Utilities.Locations.Region.Shapes;
 import me.Tiernanator.Utilities.Materials.BuildingMaterial;
 import me.Tiernanator.Utilities.Menu.Menu;
 import me.Tiernanator.Utilities.Menu.MenuEntry;
@@ -78,7 +77,6 @@ public class UtilitiesMain extends JavaPlugin {
 		Menu.setPlugin(this);
 		MySQL.setPlugin(this);
 		PlayerTime.setPlugin(this);
-		Shapes.setPlugin(this);
 	}
 
 	private void initialiseSQL() {
