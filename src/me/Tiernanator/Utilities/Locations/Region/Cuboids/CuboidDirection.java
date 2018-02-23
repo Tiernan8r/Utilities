@@ -6,25 +6,25 @@ public enum CuboidDirection {
 
 	public CuboidDirection opposite() {
 		switch (this) {
-			case NORTH :
+			case NORTH:
 				return SOUTH;
-			case EAST :
+			case EAST:
 				return WEST;
-			case SOUTH :
+			case SOUTH:
 				return NORTH;
-			case WEST :
+			case WEST:
 				return EAST;
-			case HORIZONTAL :
+			case HORIZONTAL:
 				return VERTICAL;
-			case VERTICAL :
+			case VERTICAL:
 				return HORIZONTAL;
-			case UP :
+			case UP:
 				return DOWN;
-			case DOWN :
+			case DOWN:
 				return UP;
-			case BOTH :
+			case BOTH:
 				return BOTH;
-			default :
+			default:
 				return UNKNOWN;
 		}
 	}

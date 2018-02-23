@@ -1,16 +1,15 @@
 package me.Tiernanator.Utilities.Materials;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.Material;
-
-import me.Tiernanator.Utilities.UtilitiesMain;
 import me.Tiernanator.Utilities.Colours.Colour;
 import me.Tiernanator.Utilities.File.ConfigAccessor;
-import me.Tiernanator.Utilities.Locations.Zones.ZoneName;
+import me.Tiernanator.Utilities.UtilitiesMain;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class BuildingMaterial implements Serializable {
 
@@ -50,6 +49,11 @@ public class BuildingMaterial implements Serializable {
 
 	}
 
+	@SuppressWarnings("deprecation")
+	public BuildingMaterial(Block block) {
+		this(block.getType(), block.getData());
+	}
+	
 	public Material getMaterial() {
 		return this.material;
 	}
@@ -68,23 +72,23 @@ public class BuildingMaterial implements Serializable {
 			return allBuildingMaterials;
 		}
 
-		allBuildingMaterials = new ArrayList<BuildingMaterial>();
+		allBuildingMaterials = new LinkedList<BuildingMaterial>();
 
 		ConfigAccessor configAccessor = new ConfigAccessor(plugin,
 				"buildingMaterials.yml");
-		
+
 		List<String> materialsToIgnore = configAccessor.getConfig()
 				.getStringList("IGNORE");
-		
+
 		if(materialsToIgnore == null) {
-			materialsToIgnore = new ArrayList<String>();
+			materialsToIgnore = new LinkedList<>();
 		}
-		
+
 		for (Material material : Material.ACACIA_DOOR.getClass()
 				.getEnumConstants()) {
 
 			String materialName = material.name();
-			
+
 			if (!material.isBlock() || materialsToIgnore.contains(materialName)) {
 				continue;
 			}
@@ -114,10 +118,10 @@ public class BuildingMaterial implements Serializable {
 					}
 
 				}
-				
+
 				subMaterialName = subMaterialName.toUpperCase();
-				subMaterialName = ZoneName.parseNameToZoneCode(subMaterialName);
-				
+				subMaterialName = subMaterialName.replace("_", " ");
+
 				BuildingMaterial buildingMaterial = new BuildingMaterial(
 						material, damage, subMaterialName);
 				allBuildingMaterials.add(buildingMaterial);
@@ -126,6 +130,13 @@ public class BuildingMaterial implements Serializable {
 		}
 
 		return allBuildingMaterials;
+
+	}
+
+	@SuppressWarnings("deprecation")
+	public static BuildingMaterial getBuildingMaterial(Block block) {
+
+		return getBuildingMaterial(block.getType(), block.getData());
 
 	}
 
@@ -166,12 +177,34 @@ public class BuildingMaterial implements Serializable {
 		BuildingMaterial material = BuildingMaterial
 				.getBuildingMaterial(materialName);
 
-		if (material == null) {
-			return false;
-		}
-		return true;
+		return material != null;
 	}
 
+	public void setIgnoreDamage() {
+		this.damage = -1;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+
+		if (!(object instanceof BuildingMaterial)) {
+			return false;
+		}
+		BuildingMaterial toCompare = (BuildingMaterial) object;
+
+		Material thisMaterial = getMaterial();
+		Material compareMaterial = toCompare.getMaterial();
+
+		if (thisMaterial != compareMaterial) {
+			return false;
+		}
+
+		int thisDamage = getDamage();
+		int compareDamage = toCompare.getDamage();
+
+		return thisDamage < 0 || compareDamage < 0 || thisDamage == compareDamage;
+
+	}
 	
 	@Override
 	public String toString() {

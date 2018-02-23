@@ -1,13 +1,13 @@
 package me.Tiernanator.Utilities.Menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.Tiernanator.Utilities.Items.ItemUtility;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import me.Tiernanator.Utilities.UtilitiesMain;
-import me.Tiernanator.Utilities.Items.Item;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MenuEntry {
 
@@ -16,9 +16,50 @@ public class MenuEntry {
 	@SuppressWarnings("unused")
 	private static UtilitiesMain plugin;
 
+	private Object actionVariable;
+
+	public static List<MenuEntry> getAllMenuEntries() {
+		return allMenuEntries;
+	}
+
+	private MenuAction clickAction;
+	private ItemStack item;
+	private String entryName;
+	private int entryIndex;
+
+	public MenuEntry(String entryName, ItemStack entryItem, MenuAction clickAction, Object clickVariable) {
+
+		this.entryName = entryName;
+		this.item = entryItem;
+		this.clickAction = clickAction;
+		this.actionVariable = clickVariable;
+		this.entryIndex = -1;
+
+		if (entryName != null) {
+			ItemUtility.renameItem(getEntryItem(), getEntryName());
+		}
+
+		addMenuEntry(this);
+
+	}
+
+	public MenuEntry(String entryName, ItemStack entryItem, MenuAction clickAction, Object clickVariable, int entryIndex) {
+
+		this.entryName = entryName;
+		this.item = entryItem;
+		this.clickAction = clickAction;
+		this.actionVariable = clickVariable;
+		this.entryIndex = entryIndex;
+
+		ItemUtility.renameItem(getEntryItem(), getEntryName());
+
+		addMenuEntry(this);
+
+	}
+
 	public static void addMenuEntry(MenuEntry menuEntry) {
 
-		List<MenuEntry> menuEntries = new ArrayList<MenuEntry>();
+		List<MenuEntry> menuEntries = new LinkedList<>();
 		menuEntries = getAllMenuEntries();
 		if (menuEntries.contains(menuEntry)) {
 			return;
@@ -27,8 +68,12 @@ public class MenuEntry {
 		setMenuEntries(menuEntries);
 	}
 
-	public static List<MenuEntry> getAllMenuEntries() {
-		return allMenuEntries;
+	public static void setMenuEntries(List<MenuEntry> menuEntries) {
+		allMenuEntries = menuEntries;
+	}
+
+	public static void setPlugin(UtilitiesMain main) {
+		plugin = main;
 	}
 
 	public static MenuEntry getMenuEntry(ItemStack item) {
@@ -46,12 +91,12 @@ public class MenuEntry {
 			ItemStack itemEntry = menuEntry.getEntryItem();
 			String itemName = "";
 			try {
-				itemName = Item.getItemName(item);
+				itemName = ItemUtility.getItemName(item);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
 			}
-			String entryName = Item.getItemName(itemEntry);
+			String entryName = ItemUtility.getItemName(itemEntry);
 			try {
 				if (itemEntry.equals(item)
 						&& itemName.equalsIgnoreCase(entryName)) {
@@ -64,51 +109,6 @@ public class MenuEntry {
 		}
 
 		return null;
-	}
-
-	public static void setMenuEntries(List<MenuEntry> menuEntries) {
-		allMenuEntries = menuEntries;
-	}
-	public static void setPlugin(UtilitiesMain main) {
-		plugin = main;
-	}
-
-	private Object actionVariable;
-	private MenuAction clickAction;
-	private ItemStack item;
-	private String entryName;
-	private int entryIndex;
-
-	public MenuEntry(String entryName, ItemStack entryItem,
-			MenuAction clickAction, Object clickVariable) {
-
-		this.entryName = entryName;
-		this.item = entryItem;
-		this.clickAction = clickAction;
-		this.actionVariable = clickVariable;
-		this.entryIndex = -1;
-
-		if (entryName != null) {
-			Item.renameItem(getEntryItem(), getEntryName());
-		}
-
-		addMenuEntry(this);
-
-	}
-
-	public MenuEntry(String entryName, ItemStack entryItem,
-			MenuAction clickAction, Object clickVariable, int entryIndex) {
-
-		this.entryName = entryName;
-		this.item = entryItem;
-		this.clickAction = clickAction;
-		this.actionVariable = clickVariable;
-		this.entryIndex = entryIndex;
-
-		Item.renameItem(getEntryItem(), getEntryName());
-
-		addMenuEntry(this);
-
 	}
 
 	public Object getActionVariable() {
@@ -133,6 +133,6 @@ public class MenuEntry {
 
 	public void setEntryName(String entryName) {
 		this.entryName = entryName;
-		Item.renameItem(getEntryItem(), entryName);
+		ItemUtility.renameItem(getEntryItem(), entryName);
 	}
 }

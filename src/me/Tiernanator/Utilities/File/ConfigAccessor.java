@@ -1,25 +1,29 @@
 /*
-* Copyright (C) 2012
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy 
-* of this software and associated documentation files (the "Software"), to deal 
-* in the Software without restriction, including without limitation the rights 
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to permit persons to whom the Software is 
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE 
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
-* SOFTWARE.
-*/
+ * Copyright (C) 2012
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package me.Tiernanator.Utilities.File;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +31,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 /*
- * This class handles multiple configs by mimicking the in built methods for the 
+ * This class handles multiple configs by mimicking the in built methods for the
  * generic config file, bt allowing it to work with any file name
  */
 public class ConfigAccessor {
@@ -73,18 +74,14 @@ public class ConfigAccessor {
 
 	// constructor for the class, take the plugin & the file name of the file to
 	// get
+
 	/**
-	 * 
-	 * @param plugin
-	 *            The Plugin instance whose folder will be used for the file
-	 * @param fileName
-	 *            The name of the config file you want to access
-	 * @param folderName
-	 *            The name of the sub folder the file will be in, excluding the
-	 *            initial \
+	 * @param plugin     The Plugin instance whose folder will be used for the file
+	 * @param fileName   The name of the config file you want to access
+	 * @param folderName The name of the sub folder the file will be in, excluding the
+	 *                   initial \
 	 */
-	public ConfigAccessor(Plugin plugin, String fileName,
-			String folderName) {
+	public ConfigAccessor(Plugin plugin, String fileName, String folderName) {
 		// if the plugin doesn't exist
 		if (plugin == null)
 			// can't work
@@ -96,8 +93,7 @@ public class ConfigAccessor {
 		// the same for the file name
 		this.fileName = fileName;
 		// get the folder containing the file
-		File dataFolder = new File(plugin.getDataFolder().toString()
-				+ File.separator + folderName);
+		File dataFolder = new File(plugin.getDataFolder().toString() + File.separator + folderName);
 		// throw an error if there is no folder
 		// if (dataFolder == null)
 		// throw new IllegalStateException();
@@ -106,7 +102,7 @@ public class ConfigAccessor {
 		// access
 		this.configFile = new File(dataFolder, fileName);
 	}
-	
+
 	public ConfigAccessor(Plugin parentPlugin, File textFile) {
 		// if the plugin doesn't exist
 		if (parentPlugin == null)
@@ -133,6 +129,7 @@ public class ConfigAccessor {
 		// otherwise it's not empty & return the data contained inside
 		return fileConfiguration;
 	}
+
 	// handles reloads
 	public void reloadConfig() {
 		// load the data from the file
@@ -144,13 +141,13 @@ public class ConfigAccessor {
 		// if there are defaults
 		if (defConfigStream != null) {
 			// load the default
-			YamlConfiguration defConfig = YamlConfiguration
-					.loadConfiguration(new InputStreamReader(defConfigStream));
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
 			// set the data in the file to the default data, i.e reload it from
 			// memory
 			fileConfiguration.setDefaults(defConfig);
 		}
 	}
+
 	// handles saving the config
 	public void saveConfig() {
 		// If they contain values
@@ -160,11 +157,11 @@ public class ConfigAccessor {
 				getConfig().save(configFile);
 				// catch any errors
 			} catch (IOException ex) {
-				plugin.getLogger().log(Level.SEVERE,
-						"Could not save config to " + configFile, ex);
+				plugin.getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
 			}
 		}
 	}
+
 	// as the name suggests, saves the defaults
 	public void saveDefaultConfig() {
 		// if the file doesn't exist

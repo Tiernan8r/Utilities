@@ -1,15 +1,11 @@
 package me.Tiernanator.Utilities.File;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
-
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Log {
 
@@ -21,12 +17,10 @@ public class Log {
 	public Log(JavaPlugin plugin) {
 
 		Date date = new Date(System.currentTimeMillis());
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd_HH.mm.ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 		String time = dateFormat.format(date);
-		String fileName = "log-" + time;
 
-		this.fileName = fileName;
+		this.fileName = "log-" + time;
 		this.plugin = plugin;
 
 		createPrintWriter();
@@ -66,8 +60,7 @@ public class Log {
 		JavaPlugin plugin = getPlugin();
 		String fileName = getFileName();
 
-		File dataFolder = new File(plugin.getDataFolder().getAbsolutePath()
-				+ File.separator + "log");
+		File dataFolder = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "log");
 		if (!dataFolder.exists()) {
 			dataFolder.mkdir();
 		}
@@ -82,7 +75,7 @@ public class Log {
 		}
 		this.logFile = logFile;
 
-		FileWriter fileWriter = null;
+		FileWriter fileWriter;
 		PrintWriter printWriter = null;
 		try {
 			fileWriter = new FileWriter(logFile);
@@ -124,12 +117,10 @@ public class Log {
 		String pluginName = plugin.getName();
 
 		Date date = new Date(System.currentTimeMillis());
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String time = dateFormat.format(date);
 
-		String log = "[" + time + " " + loggingLevel + "]: [" + pluginName
-				+ "] " + message;
+		String log = "[" + time + " " + loggingLevel + "]: [" + pluginName + "] " + message;
 
 		printWriter.println(log);
 		printWriter.flush();

@@ -1,21 +1,18 @@
 package me.Tiernanator.Utilities.Items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //This class simply renames an item to the name provided
-public class Item {
+public class ItemUtility {
 
 	public static ItemStack addLore(ItemStack item, String lore) {
 
-		List<String> currentLore = new ArrayList<String>();
-		if (hasLore(item)) {
-			currentLore = getLore(item);
-		}
+		List<String> currentLore = getLore(item);
 		currentLore.add(lore);
 		return setLore(item, currentLore);
 
@@ -34,12 +31,12 @@ public class Item {
 	public static List<String> getLore(ItemStack item) {
 
 		if (!hasLore(item)) {
-			return null;
+			return new ArrayList<String>();
 		}
 
 		// Get the lore from the itemMeta
 		ItemMeta itemMeta = item.getItemMeta();
-		List<String> lore = new ArrayList<String>();
+		List<String> lore;
 		lore = itemMeta.getLore();
 		return lore;
 

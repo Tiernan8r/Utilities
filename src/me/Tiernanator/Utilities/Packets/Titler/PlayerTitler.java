@@ -1,14 +1,12 @@
 package me.Tiernanator.Utilities.Packets.Titler;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-
-import me.Tiernanator.Utilities.UtilitiesMain;
 import me.Tiernanator.Utilities.Packets.Packet;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 public class PlayerTitler implements Listener {
 
@@ -39,9 +37,6 @@ public class PlayerTitler implements Listener {
 
 		Packet.sendPacket(player, packetTitle);
 
-	}
-
-	public PlayerTitler(UtilitiesMain main) {
 	}
 
 }

@@ -1,29 +1,27 @@
 package me.Tiernanator.Utilities.Players;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import me.Tiernanator.Utilities.SQL.SQLServer;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Tiernanator.Utilities.UtilitiesMain;
-import me.Tiernanator.Utilities.SQL.SQLServer;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class PlayerTime {
 
 	private static UtilitiesMain plugin;
-	public static void setPlugin(UtilitiesMain main) {
-		plugin = main;
-	}
-
 	private long playerTime;
 	private long previousTime;
 	private Player player;
-
 	public PlayerTime(Player player) {
 		this.player = player;
 		this.previousTime = previousPlayerTime();
 		this.playerTime = System.currentTimeMillis();
+	}
+
+	public static void setPlugin(UtilitiesMain main) {
+		plugin = main;
 	}
 
 	public void addPlayerTime(long time) {
@@ -63,6 +61,12 @@ public class PlayerTime {
 		return this.playerTime;
 	}
 
+	public void setPlayerTime(long playerTime) {
+		addPlayerTime(getPlayerTime());
+		this.previousTime = getPlayerTime();
+		this.playerTime = playerTime;
+	}
+
 	public long getPreviousPlayerTime() {
 		return this.previousTime;
 	}
@@ -71,10 +75,10 @@ public class PlayerTime {
 
 		String playerUUID = getPlayer().getUniqueId().toString();
 		boolean hasValue = false;
-		String query = "SELECT Time FROM PlayerTime WHERE UUID = '" + playerUUID
-				+ "';";
+		String query = "SELECT Time FROM PlayerTime WHERE UUID = '" + playerUUID + "';";
 
 		ResultSet resultSet = SQLServer.getResultSet(query);
+
 		try {
 			hasValue = resultSet.isBeforeFirst();
 		} catch (SQLException e) {
@@ -88,17 +92,8 @@ public class PlayerTime {
 
 		String playerUUID = getPlayer().getUniqueId().toString();
 
-		String query = "SELECT Time FROM PlayerTime WHERE UUID = '" + playerUUID
-				+ "';";
-		long playerTime = SQLServer.getLong(query, "Time");
-
-		return playerTime;
-	}
-
-	public void setPlayerTime(long playerTime) {
-		addPlayerTime(getPlayerTime());
-		this.previousTime = getPlayerTime();
-		this.playerTime = playerTime;
+		String query = "SELECT Time FROM PlayerTime WHERE UUID = '" + playerUUID + "';";
+		return SQLServer.getLong(query, "Time");
 	}
 
 }

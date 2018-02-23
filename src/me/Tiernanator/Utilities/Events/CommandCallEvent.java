@@ -5,9 +5,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-//This is the custom player create portal event with a flint and steel event that is called by PlayerFlintAndSteelInteract, it just contains functions that
-//return all the values needed
-
 public final class CommandCallEvent extends Event implements Cancellable {
 	
 	//handlers is a variable "handled"(...) by the server

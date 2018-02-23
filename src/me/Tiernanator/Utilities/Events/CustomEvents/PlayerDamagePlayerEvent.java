@@ -1,5 +1,5 @@
 package me.Tiernanator.Utilities.Events.CustomEvents;
-import org.bukkit.entity.Entity;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -22,7 +22,7 @@ public final class PlayerDamagePlayerEvent extends PlayerDamageEntityEvent imple
 	// constructor for the event that sets the variables
 	public PlayerDamagePlayerEvent(Player player, Player attackedPlayer, EntityDamageByEntityEvent originalEvent) {
 
-		super(player, (Entity) attackedPlayer, originalEvent);
+		super(player, attackedPlayer, originalEvent);
 		
 		this.attackedPlayer = attackedPlayer;
 		

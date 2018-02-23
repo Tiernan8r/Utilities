@@ -15,7 +15,7 @@ public class MessageColourer {
 	/**
 	 * parseMessage() if a function that takes a string containing colour code
 	 * strings, and interprets them as colours, returning a coloured string as
-	 * output. It uses the Class {@link me.Tiernanator.Colours.Colour.class} to
+	 * output. It uses the Class {@link me.Tiernanator.Utilities.Colours.Colour} to
 	 * handle the colour codes.
 	 * 
 	 * @param message
@@ -40,16 +40,14 @@ public class MessageColourer {
 			String currentCharacter = Character.toString(messageArray[i]);
 
 			if (currentCharacter.equals("&")) {
-				if (!(i + 1 > messageArray.length)) {
+				if (i < messageArray.length - 2) {
 
 					String code = currentCharacter + Character
 							.toString(messageArray[i + 1]).toUpperCase();
 
 					ChatColor colour = Colour.parseCodeToChatColour(code);
 
-					if (colour == null) {
-						continue;
-					} else {
+					if (colour != null) {
 						parsedMessage += "§";
 					}
 				}

@@ -1,9 +1,9 @@
 package me.Tiernanator.Utilities.Locations.Region.Cuboids;
 
-import java.util.Iterator;
-
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import java.util.Iterator;
 
 public class CuboidIterator implements Iterator<Block> {
 
@@ -12,8 +12,7 @@ public class CuboidIterator implements Iterator<Block> {
 	private int x, y, z;
 	private int sizeX, sizeY, sizeZ;
 
-	public CuboidIterator(World w, int x1, int y1, int z1, int x2, int y2,
-			int z2) {
+	public CuboidIterator(World w, int x1, int y1, int z1, int x2, int y2, int z2) {
 
 		this.w = w;
 		baseX = x1;

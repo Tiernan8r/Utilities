@@ -1,19 +1,15 @@
 package me.Tiernanator.Utilities.SQL;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
+import me.Tiernanator.Utilities.SQL.MySQL.MySQL;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Tiernanator.Utilities.UtilitiesMain;
-import me.Tiernanator.Utilities.SQL.MySQL.MySQL;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SQLServer {
 
@@ -100,11 +96,7 @@ public class SQLServer {
 	public static boolean getBool(String query, String columnName) {
 
 		Object object = getObject(query, columnName);
-		if (object instanceof Boolean) {
-			return (boolean) object;
-		}
-
-		return false;
+		return object instanceof Boolean && (boolean) object;
 
 	}
 
@@ -112,7 +104,7 @@ public class SQLServer {
 
 		boolean openConnection = false;
 		try {
-			openConnection = connection == null || connection.isClosed();
+			openConnection = connection == null || !connection.isClosed();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -160,7 +152,7 @@ public class SQLServer {
 
 	public static List<Object> getList(String query, String columnName) {
 
-		List<Object> list = new ArrayList<Object>();
+		List<Object> list = new LinkedList<>();
 		ResultSet resultSet = getResultSet(query);
 
 		try {
@@ -236,6 +228,62 @@ public class SQLServer {
 
 	}
 
+	public static List<Location> getLocations(String query) {
+
+		ResultSet resultSet = SQLServer.getResultSet(query);
+
+		try {
+			if (!resultSet.isBeforeFirst()) {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		List<Location> allLocations = new ArrayList<Location>();
+
+		try {
+
+			while (resultSet.next()) {
+
+				int x = 0;
+				int y = 0;
+				int z = 0;
+				String worldName = null;
+				try {
+					x = resultSet.getInt("X");
+					y = resultSet.getInt("Y");
+					z = resultSet.getInt("Z");
+					worldName = resultSet.getString("World");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
+				if (worldName == null) {
+					return null;
+				}
+
+				World world = plugin.getServer().getWorld(worldName);
+				Location location = new Location(world, x, y, z);
+
+				allLocations.add(location);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return allLocations;
+
+	}
+	
 	public static long getLong(String query, String columnName) {
 
 		Object object = getObject(query, columnName);
@@ -286,26 +334,33 @@ public class SQLServer {
 
 	public static ResultSet getResultSet(String query) {
 
-		// get the SQL connection and prepare a SQL statement to execute the
-		// query
-		connection = getConnection();
-		Statement statement = null;
+		//		// get the SQL connection and prepare a SQL statement to execute the
+		//		// query
+		//		connection = getConnection();
+		//		Statement statement = null;
+		//		try {
+		//			statement = connection.createStatement();
+		//			statement.closeOnCompletion();
+		//		} catch (SQLException e) {
+		//			e.printStackTrace();
+		//		}
+		//
+		//		// get the result of the query, in this case a random message
+		//		ResultSet resultSet = null;
+		//		try {
+		//			resultSet = statement.executeQuery(query);
+		//		} catch (SQLException e) {
+		//			e.printStackTrace();
+		//		}
+
 		try {
-			statement = connection.createStatement();
-			statement.closeOnCompletion();
-		} catch (SQLException e) {
+			return getSQL().querySQL(query);
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
-		// get the result of the query, in this case a random message
-		ResultSet resultSet = null;
-		try {
-			resultSet = statement.executeQuery(query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return resultSet;
+		return null;
+		//		return resultSet;
 
 	}
 

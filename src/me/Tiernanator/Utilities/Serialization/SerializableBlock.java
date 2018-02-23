@@ -1,13 +1,12 @@
 package me.Tiernanator.Utilities.Serialization;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.Tiernanator.Utilities.Materials.BuildingMaterial;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import me.Tiernanator.Utilities.Materials.BuildingMaterial;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SerializableBlock extends SerializableLocation {
 
@@ -38,15 +37,14 @@ public class SerializableBlock extends SerializableLocation {
 		int damage = block.getData();
 		BuildingMaterial buildingMaterial  = new BuildingMaterial(material, damage);
 		Location location = block.getLocation();
-		
-		SerializableBlock serializableBlock = new SerializableBlock(buildingMaterial, location);
-		return serializableBlock;
-		
+
+		return new SerializableBlock(buildingMaterial, location);
+
 	}
 	
 	public static List<SerializableBlock> convertToSerializablBlock(List<Block> originalList) {
-		
-		List<SerializableBlock> serializedArray = new ArrayList<SerializableBlock>();
+
+		List<SerializableBlock> serializedArray = new LinkedList<>();
 		for(Block block : originalList) {
 			SerializableBlock sBlock = fromBlock(block);
 			serializedArray.add(sBlock);
@@ -57,8 +55,8 @@ public class SerializableBlock extends SerializableLocation {
 	}
 	
 	public static List<Block> convertFromSerializableBlock(List<SerializableBlock> originalList) {
-		
-		List<Block> serializedArray = new ArrayList<Block>();
+
+		List<Block> serializedArray = new LinkedList<>();
 		for(SerializableBlock sBlock : originalList) {
 			Block block = sBlock.getBlock();
 			serializedArray.add(block);

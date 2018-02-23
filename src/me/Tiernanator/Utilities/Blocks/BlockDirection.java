@@ -47,9 +47,11 @@ public enum BlockDirection {
 	// SOUTH_SOUTH_WEST,
 	SOUTH_WEST,
 
-	WEST;
+	WEST,
 	// WEST_NORTH_WEST,
 	// WEST_SOUTH_WEST;
+
+	SELF;
 
 	public static BlockDirection getBlockDirection(float yaw, float pitch) {
 
@@ -75,31 +77,33 @@ public enum BlockDirection {
 		// 90 & -270 = neg x
 		// 180 & -180 = neg z
 		// 270 & -90 = pos x
-		String xDirection = "";
+		String xDirection;
 
 		if (yaw < 0) {
 			yaw += 360f;
 		}
 
-		if (yaw >= -45 && yaw < 0) {
-			yaw = 0;
-		} else if (yaw >= 0 && yaw < 45) {
-			yaw = 45;
-		} else if (yaw >= 45 && yaw < 90) {
-			yaw = 90;
-		} else if (yaw >= 90 && yaw < 135) {
-			yaw = 135;
-		} else if (yaw >= 135 && yaw < 180) {
-			yaw = 180;
-		} else if (yaw >= 180 && yaw < 225) {
-			yaw = 225;
-		} else if (yaw >= 225 && yaw < 270) {
-			yaw = 270;
-		} else if (yaw >= 270 && yaw < 315) {
-			yaw = 315;
-		} else if (yaw >= 315 && yaw < 360) {
-			yaw = 360;
-		}
+		yaw = 45 * (int) Math.floor(yaw / 45);
+
+		//		if (yaw >= -45 && yaw < 0) {
+		//			yaw = 0;
+		//		} else if (yaw >= 0 && yaw < 45) {
+		//			yaw = 45;
+		//		} else if (yaw >= 45 && yaw < 90) {
+		//			yaw = 90;
+		//		} else if (yaw >= 90 && yaw < 135) {
+		//			yaw = 135;
+		//		} else if (yaw >= 135 && yaw < 180) {
+		//			yaw = 180;
+		//		} else if (yaw >= 180 && yaw < 225) {
+		//			yaw = 225;
+		//		} else if (yaw >= 225 && yaw < 270) {
+		//			yaw = 270;
+		//		} else if (yaw >= 270 && yaw < 315) {
+		//			yaw = 315;
+		//		} else if (yaw >= 315 && yaw < 360) {
+		//			yaw = 360;
+		//		}
 
 		if (yaw == 0) {
 			xDirection = "SOUTH";
@@ -121,14 +125,14 @@ public enum BlockDirection {
 			xDirection = "SOUTH";
 		}
 
-		String direction = "";
+		String direction;
 		if (yDirection.equalsIgnoreCase("")) {
 			direction = xDirection;
 		} else {
 			direction = yDirection + "_" + xDirection;
 		}
-		BlockDirection blockDirection = valueOf(direction);
-		return blockDirection;
+
+		return valueOf(direction);
 	}
 
 	public static BlockDirection getCardinalBlockDirection(float yaw) {
@@ -279,6 +283,22 @@ public enum BlockDirection {
 
 		}
 		return block;
+	}
+
+	public static Block getRelativeBlock(Location location, BlockDirection direction) {
+
+		return getRelativeBlock(location.getBlock(), direction);
+
+	}
+
+	public static BlockDirection[] allViableDirections() {
+
+		return new BlockDirection[]{
+
+				DOWN, DOWN_NORTH, DOWN_NORTH_EAST, DOWN_NORTH_WEST, DOWN_EAST, DOWN_SOUTH, DOWN_SOUTH_EAST, DOWN_SOUTH_WEST, DOWN_WEST, UP, UP_NORTH, UP_NORTH_EAST, UP_NORTH_WEST, UP_EAST, UP_SOUTH, UP_SOUTH_EAST, UP_SOUTH_WEST, UP_WEST, EAST, NORTH, NORTH_EAST, NORTH_WEST, SOUTH, SOUTH_EAST, SOUTH_WEST, WEST
+
+		};
+
 	}
 
 }

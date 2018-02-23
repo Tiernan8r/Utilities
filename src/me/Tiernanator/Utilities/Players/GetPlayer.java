@@ -1,12 +1,12 @@
 package me.Tiernanator.Utilities.Players;
 
-import java.util.Collection;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Collection;
 
 public class GetPlayer {
 
@@ -14,60 +14,21 @@ public class GetPlayer {
 
 		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
 
-		if (playerUUID == null) {
-			return null;
-		}
-		OfflinePlayer[] offlinePlayers = Bukkit.getServer().getOfflinePlayers();
-		if (offlinePlayers.length == 0) {
-			return null;
-		}
-		for (int i = 0; i < offlinePlayers.length; i++) {
-			String iUUID = offlinePlayers[i].getUniqueId().toString();
-
-			if (playerUUID.equals(iUUID)) {
-				OfflinePlayer player = offlinePlayers[i];
-
-				return player;
-			}
-		}
-		return null;
+		return getOfflinePlayerByUUID(playerUUID);
 	}
 
 	public static OfflinePlayer getOfflinePlayer(String name,
 			CommandSender sender, ChatColor warning, ChatColor highlight) {
 
-		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
+		OfflinePlayer player = getOfflinePlayer(name);
 
-		if (playerUUID == null) {
+		if (player == null) {
 			sender.sendMessage(highlight + name + warning
 					+ " has never played on the server before.");
-			return null;
 		}
-		OfflinePlayer[] offlinePlayers = Bukkit.getServer().getOfflinePlayers();
-		if (offlinePlayers.length == 0) {
-			sender.sendMessage(highlight + name + warning
-					+ " has never played on the server before.");
-			return null;
-		}
-		
-//		UUID uuid = UUID.fromString(playerUUID);
-//		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-		
-		for (OfflinePlayer i : offlinePlayers) {
-			String iUUID = i.getUniqueId().toString();
 
-			if (playerUUID.equals(iUUID)) {
-//				OfflinePlayer player = i;
-//
-//				if (player == null) {
-//					sender.sendMessage(highlight + name + warning
-//							+ " has never played on the server before.");
-//				}
-				return i;
-//				return player;
-			}
-		}
-		return null;
+		return player;
+
 	}
 
 	public static OfflinePlayer getOfflinePlayerByUUID(String playerUUID) {
@@ -79,13 +40,11 @@ public class GetPlayer {
 		if (offlinePlayers.length == 0) {
 			return null;
 		}
-		for (int i = 0; i < offlinePlayers.length; i++) {
-			String iUUID = offlinePlayers[i].getUniqueId().toString();
+		for (OfflinePlayer offlinePlayer : offlinePlayers) {
+			String iUUID = offlinePlayer.getUniqueId().toString();
 
 			if (playerUUID.equals(iUUID)) {
-				OfflinePlayer player = offlinePlayers[i];
-
-				return player;
+				return offlinePlayer;
 			}
 		}
 		return null;
@@ -94,58 +53,28 @@ public class GetPlayer {
 	public static Player getPlayer(String name) {
 
 		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
+		return getPlayerByUUID(playerUUID);
 
-		if (playerUUID == null) {
-			return null;
-		}
-		Collection<? extends Player> onlinePlayers = Bukkit.getServer()
-				.getOnlinePlayers();
-		if (onlinePlayers.isEmpty()) {
-			return null;
-		}
-		for (Player player : onlinePlayers) {
-			String iUUID = player.getUniqueId().toString();
-
-			if (playerUUID.equals(iUUID)) {
-				return player;
-			}
-		}
-		return null;
 	}
 
 	public static Player getPlayer(String name, CommandSender sender,
 			ChatColor warning, ChatColor highlight) {
 
-		String playerUUID = PlayerLogger.getPlayerUUIDByName(name);
+		OfflinePlayer offlinePlayer = getOfflinePlayer(name);
 
-		if (playerUUID == null) {
+		if (offlinePlayer == null) {
 			sender.sendMessage(highlight + name + warning
 					+ " has never played on the server before.");
 			return null;
 		}
-		Collection<? extends Player> onlinePlayers = Bukkit.getServer()
-				.getOnlinePlayers();
-		if (onlinePlayers.isEmpty()) {
+		if (!offlinePlayer.isOnline()) {
 			sender.sendMessage(
 					highlight + name + warning + " is not currently online.");
 			return null;
 		}
-		for (Player i : onlinePlayers) {
-			String iUUID = i.getUniqueId().toString();
 
-			if (playerUUID.equals(iUUID)) {
-				Player player = i.getPlayer();
-				if (player == null) {
-					sender.sendMessage(highlight + name + warning
-							+ " is not currently online?");
-				}
+		return offlinePlayer.getPlayer();
 
-				return player;
-			}
-		}
-		sender.sendMessage(highlight + name + warning
-				+ " has never played on the server before.");
-		return null;
 	}
 
 	public static Player getPlayerByUUID(String playerUUID) {
