@@ -1,15 +1,14 @@
 package me.Tiernanator.Utilities.Menu.EventCallers;
 
+import me.Tiernanator.Utilities.Menu.Menu;
+import me.Tiernanator.Utilities.Menu.MenuEvents.MenuCloseEvent;
+import me.Tiernanator.Utilities.MetaData.MetaData;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-
-import me.Tiernanator.Utilities.UtilitiesMain;
-import me.Tiernanator.Utilities.Menu.Menu;
-import me.Tiernanator.Utilities.Menu.MenuEvents.MenuCloseEvent;
-import me.Tiernanator.Utilities.MetaData.MetaData;
 
 public class OnInventoryClose implements Listener {
 

@@ -459,12 +459,12 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 	 *
 	 * @param material the BuildingMaterial type
 	 */
-	@SuppressWarnings("deprecation")
 	private void fill(BuildingMaterial material) {
 
 		for (Block b : this) {
 			b.setType(material.getMaterial());
-			b.setData(material.getDamage());
+			//TODO find replacement for this line as is removed from API
+//			b.setData(material.getDamage());
 		}
 
 	}

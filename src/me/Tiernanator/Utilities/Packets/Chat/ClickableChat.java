@@ -1,11 +1,10 @@
 package me.Tiernanator.Utilities.Packets.Chat;
 
+import me.Tiernanator.Utilities.Packets.Packet;
+import net.minecraft.server.v1_14_R1.IChatBaseComponent;
+import net.minecraft.server.v1_14_R1.PacketPlayOutChat;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import me.Tiernanator.Utilities.Packets.Packet;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 
 public class ClickableChat {
 
@@ -16,7 +15,7 @@ public class ClickableChat {
 		String colour = Packet.getJsonColour(chatColour);
 
 		PacketPlayOutChat clickableChat = new PacketPlayOutChat(
-				ChatSerializer.a("{\"text\":\"" + text1
+				IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + text1
 						+ "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
 						+ url
 						+ "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\""

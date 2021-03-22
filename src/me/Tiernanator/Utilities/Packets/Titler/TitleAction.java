@@ -1,6 +1,6 @@
 package me.Tiernanator.Utilities.Packets.Titler;
 
-import net.minecraft.server.v1_12_R1.PacketPlayOutTitle.EnumTitleAction;
+import net.minecraft.server.v1_14_R1.PacketPlayOutTitle.EnumTitleAction;
 
 public enum TitleAction {
 

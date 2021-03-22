@@ -6,12 +6,13 @@ import org.bukkit.material.Bed;
 import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 
+@SuppressWarnings("deprecation")
 public class MultiBlocks {
 
 	public static Block getCorrectBlock(Block block) {
-
+		
 		BlockState blockState = block.getState();
-
+		
 		if (blockState instanceof Chest) {
 			Chest chest = (Chest) blockState;
 			InventoryHolder inventoryHolder = chest.getInventory().getHolder();
@@ -22,7 +23,7 @@ public class MultiBlocks {
 				block = ((Chest) inventoryHolder).getBlock();
 			}
 		}
-
+		
 		MaterialData materialData = blockState.getData();
 
 		if (materialData instanceof Door) {
@@ -31,7 +32,7 @@ public class MultiBlocks {
 				block = block.getRelative(BlockFace.DOWN);
 			}
 		}
-
+		
 		if (materialData instanceof Bed) {
 			Bed bed = (Bed) materialData;
 			BlockFace oppositeFace = bed.getFacing().getOppositeFace();
@@ -39,8 +40,8 @@ public class MultiBlocks {
 				block = block.getRelative(oppositeFace);
 			}
 		}
-
+		
 		return block;
 	}
-
+	
 }

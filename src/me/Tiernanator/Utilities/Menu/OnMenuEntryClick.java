@@ -1,13 +1,12 @@
 package me.Tiernanator.Utilities.Menu;
 
+import me.Tiernanator.Utilities.Menu.MenuEvents.MenuClickEvent;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
-
-import me.Tiernanator.Utilities.UtilitiesMain;
-import me.Tiernanator.Utilities.Menu.MenuEvents.MenuClickEvent;
 
 public class OnMenuEntryClick implements Listener {
 

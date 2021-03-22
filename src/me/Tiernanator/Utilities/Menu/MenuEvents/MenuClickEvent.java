@@ -1,11 +1,11 @@
 package me.Tiernanator.Utilities.Menu.MenuEvents;
+
+import me.Tiernanator.Utilities.Menu.Menu;
+import me.Tiernanator.Utilities.Menu.MenuEntry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import me.Tiernanator.Utilities.Menu.Menu;
-import me.Tiernanator.Utilities.Menu.MenuEntry;
 
 //This is the custom custom menu click event that is called by OnPlayerMenuClick, it just contains functions that
 //return all the values needed

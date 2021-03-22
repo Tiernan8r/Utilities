@@ -1,10 +1,7 @@
 package me.Tiernanator.Utilities.Menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import me.Tiernanator.Utilities.MetaData.MetaData;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,8 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.Tiernanator.Utilities.UtilitiesMain;
-import me.Tiernanator.Utilities.MetaData.MetaData;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The Menu class is an API that allows you to easily create a GUI within
@@ -149,6 +148,7 @@ public class Menu {
 		setPageNumber(getPageNumber() - 1);
 	}
 
+	@SuppressWarnings("deprecation")
 	public Inventory generateMenu(Player player) {
 
 		String menuName = getMenuName();
@@ -173,7 +173,7 @@ public class Menu {
 			menuSize -= 9;
 			int totalPages = (int) Math.ceil(numberEntries / menuSize) + 1;
 
-			ItemStack redstoneTorch = new ItemStack(Material.REDSTONE_TORCH_ON);
+			ItemStack redstoneTorch = new ItemStack(Material.LEGACY_REDSTONE_TORCH_ON);
 			String torchName = ChatColor.AQUA + "Page " + pageNumber + "/"
 					+ totalPages;
 			MenuEntry torchEntry = new MenuEntry(torchName, redstoneTorch,
@@ -184,7 +184,7 @@ public class Menu {
 			MenuEntry stoneButtonEntry = new MenuEntry(stoneName, stoneButton,
 					MenuAction.NEXT_PAGE, this, 5);
 
-			ItemStack woodButton = new ItemStack(Material.WOOD_BUTTON);
+			ItemStack woodButton = new ItemStack(Material.LEGACY_WOOD_BUTTON);
 			String woodName = ChatColor.RED + "Previous Page";
 			MenuEntry woodButtonEntry = new MenuEntry(woodName, woodButton,
 					MenuAction.PREVIOUS_PAGE, this, 3);

@@ -1,17 +1,16 @@
 package me.Tiernanator.Utilities.Menu.EventCallers;
 
+import me.Tiernanator.Utilities.Menu.Menu;
+import me.Tiernanator.Utilities.Menu.MenuEntry;
+import me.Tiernanator.Utilities.Menu.MenuEvents.MenuClickEvent;
+import me.Tiernanator.Utilities.MetaData.MetaData;
+import me.Tiernanator.Utilities.UtilitiesMain;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import me.Tiernanator.Utilities.UtilitiesMain;
-import me.Tiernanator.Utilities.Menu.Menu;
-import me.Tiernanator.Utilities.Menu.MenuEntry;
-import me.Tiernanator.Utilities.Menu.MenuEvents.MenuClickEvent;
-import me.Tiernanator.Utilities.MetaData.MetaData;
 
 public class OnInventoryClick implements Listener {
 

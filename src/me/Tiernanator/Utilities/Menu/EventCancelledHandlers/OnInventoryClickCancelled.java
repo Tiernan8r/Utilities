@@ -1,8 +1,7 @@
 package me.Tiernanator.Utilities.Menu.EventCancelledHandlers;
 
-import org.bukkit.event.Listener;
-
 import me.Tiernanator.Utilities.UtilitiesMain;
+import org.bukkit.event.Listener;
 
 public class OnInventoryClickCancelled implements Listener {
 

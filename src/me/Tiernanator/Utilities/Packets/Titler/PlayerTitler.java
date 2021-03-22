@@ -1,9 +1,8 @@
 package me.Tiernanator.Utilities.Packets.Titler;
 
 import me.Tiernanator.Utilities.Packets.Packet;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;
+import net.minecraft.server.v1_14_R1.IChatBaseComponent;
+import net.minecraft.server.v1_14_R1.PacketPlayOutTitle;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -28,7 +27,7 @@ public class PlayerTitler implements Listener {
 				+ ",\"italic\":" + italic + ",\"underlined\":" + underline
 				+ "}";
 
-		IChatBaseComponent chatSerialized = ChatSerializer
+		IChatBaseComponent chatSerialized = IChatBaseComponent.ChatSerializer
 				.a(start + phrase + end);
 
 		PacketPlayOutTitle packetTitle = new PacketPlayOutTitle(

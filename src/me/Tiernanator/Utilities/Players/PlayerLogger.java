@@ -4,20 +4,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import me.Tiernanator.Utilities.UtilitiesMain;
 import me.Tiernanator.Utilities.SQL.SQLServer;
 
 public class PlayerLogger implements Listener {
 
-	private static UtilitiesMain plugin;
+	private static JavaPlugin plugin;
 
-	public static UtilitiesMain getPlugin() {
+	public static JavaPlugin getPlugin() {
 		return plugin;
 	}
 
-	public PlayerLogger(UtilitiesMain main) {
-		plugin = main;
+	public PlayerLogger(JavaPlugin pl) {
+		plugin = pl;
+	}
+	
+	public PlayerLogger() {
 	}
 
 	public static String getPlayerNameByUUID(String uuid) {

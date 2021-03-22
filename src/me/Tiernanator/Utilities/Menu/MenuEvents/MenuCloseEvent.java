@@ -1,10 +1,10 @@
 package me.Tiernanator.Utilities.Menu.MenuEvents;
+
+import me.Tiernanator.Utilities.Menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import me.Tiernanator.Utilities.Menu.Menu;
 
 //This is the custom custom menu close event that is called by OnInventoryCloseCancelled, it just contains functions that
 //return all the values needed

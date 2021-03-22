@@ -1,11 +1,11 @@
 package me.Tiernanator.Utilities.MetaData;
 
-import java.util.List;
-
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.Plugin;
+
+import java.util.List;
 
 public class MetaData {
 

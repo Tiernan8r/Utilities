@@ -1,5 +1,6 @@
 package me.Tiernanator.Utilities.Locations.Region;
 
+//import com.jcraft.jsch.MAC;
 import me.Tiernanator.Utilities.File.DataSaver;
 import me.Tiernanator.Utilities.Locations.Region.Cuboids.Cuboid;
 import me.Tiernanator.Utilities.Materials.BuildingMaterial;
@@ -438,14 +439,15 @@ public class Region implements Serializable {
 
 		BukkitRunnable runnable = new BukkitRunnable() {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
 				List<Block> allLiquidBlocks = new LinkedList<>();
 
 				allLiquidBlocks.addAll(allBlocksByType(Material.WATER));
-				allLiquidBlocks.addAll(allBlocksByType(Material.STATIONARY_WATER));
+				allLiquidBlocks.addAll(allBlocksByType(Material.LEGACY_STATIONARY_WATER));
 				allLiquidBlocks.addAll(allBlocksByType(Material.LAVA));
-				allLiquidBlocks.addAll(allBlocksByType(Material.STATIONARY_LAVA));
+				allLiquidBlocks.addAll(allBlocksByType(Material.LEGACY_STATIONARY_LAVA));
 
 				set(allLiquidBlocks, BuildingMaterial.getBuildingMaterial("AIR"));
 			}
@@ -530,7 +532,7 @@ public class Region implements Serializable {
 		return new Location(getWorld(), getLowerX() + (x1 - getLowerX()) / 2.0, getLowerY() + (y1 - getLowerY()) / 2.0, getLowerZ() + (z1 - getLowerZ()) / 2.0);
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("unused")
 	public void flip() {
 
 		List<SerializableBlock> allSerializableBlocks = this.allSerializableBlocks();
@@ -607,7 +609,6 @@ public class Region implements Serializable {
 		for (Entry<Location, Material> e : materialHashmap.entrySet()) {
 			if (e.getValue() == Material.AIR) {
 				e.getKey().getBlock().setType(e.getValue());
-				int data = 0;
 				Byte d = dataHashmap.get(e.getKey());
 				int current = 0;
 				if (d != null) {
@@ -615,7 +616,7 @@ public class Region implements Serializable {
 				} else {
 					System.out.println("NULL");
 				}
-				data = current;
+				int data = current;
 				if (flipBlocks.contains(e.getValue())) {
 					if (current < 4) {
 						data = current + 4;
@@ -630,7 +631,8 @@ public class Region implements Serializable {
 						data = current - 8;
 					}
 				}
-				e.getKey().getBlock().setTypeIdAndData(e.getValue().getId(), (byte) data, true);
+				//TODO find replacement
+//				e.getKey().getBlock().setTypeIdAndData(e.getValue().getId(), (byte) data, true);
 			}
 		}
 		for (Entry<Location, Material> e : materialHashmap.entrySet()) {
@@ -659,7 +661,8 @@ public class Region implements Serializable {
 						data = current - 8;
 					}
 				}
-				e.getKey().getBlock().setTypeIdAndData(e.getValue().getId(), (byte) data, true);
+				//TODO find replacement: no longer works
+//				e.getKey().getBlock().setTypeIdAndData(e.getValue().getId(), (byte) data, true);
 			}
 		}
 		for (Entry<Location, Material> e : materialHashmap.entrySet()) {
@@ -688,7 +691,8 @@ public class Region implements Serializable {
 						data = current - 8;
 					}
 				}
-				e.getKey().getBlock().setTypeIdAndData(e.getValue().getId(), (byte) data, true);
+				//TODO find replceament:
+//				e.getKey().getBlock().setTypeIdAndData(e.getValue().getId(), (byte) data, true);
 			}
 		}
 	}
@@ -748,7 +752,6 @@ public class Region implements Serializable {
 	 * many times, to avoid excessive calls to getWorld().
 	 *
 	 * @param location
-	 *            the location to get a block relative to
 	 * @return the block at the given position
 	 */
 	public Block getRelativeBlock(Location location) {
@@ -999,7 +1002,7 @@ public class Region implements Serializable {
 		replace(materialOriginal, materialReplacement);
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("unused")
 	private void set(List<Block> blocks, BuildingMaterial material) {
 
 		Material type = material.getMaterial();
@@ -1010,7 +1013,8 @@ public class Region implements Serializable {
 
 			for (Block block : blocks) {
 				block.setType(type);
-				block.setData(data);
+				//TODO find replacement
+//				block.setData(data);
 			}
 
 		}
@@ -1038,7 +1042,8 @@ public class Region implements Serializable {
 						continue;
 					}
 					block.setType(type);
-					block.setData(data);
+					//TODO find replacement
+//					block.setData(data);
 				}
 
 				n += maxCycleSize;
@@ -1053,7 +1058,6 @@ public class Region implements Serializable {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public void move(Region template) {
 
 		Location baseLocation = getLowerNE();
@@ -1126,7 +1130,8 @@ public class Region implements Serializable {
 					Location rel = new Location(baseLocation.getWorld(), no1, no2, no3);
 
 					rel.getBlock().setType(block.getBuildingMaterial().getMaterial());
-					rel.getBlock().setData(block.getBuildingMaterial().getDamage());
+					//TODO find replacement
+//					rel.getBlock().setData(block.getBuildingMaterial().getDamage());
 				}
 
 				n += maxCycleSize;

@@ -1,9 +1,9 @@
 package me.Tiernanator.Utilities.Packets;
 
+import org.bukkit.Bukkit;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-
-import org.bukkit.Bukkit;
 
 public class PrivateField {
 
