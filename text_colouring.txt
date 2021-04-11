@@ -22,4 +22,4 @@ Code 	Effect
 &O 	Italic
 &R 	Reset 
 
-Where & = ง;
+Where & = ยง;
